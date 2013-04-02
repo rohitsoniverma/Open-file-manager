@@ -1,0 +1,37 @@
+<!--
+  Copyright (c) 2013 Michele Corazza.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/gpl.html
+  
+  Contributors:
+      Michele Corazza - initial API and implementation
+-->
+<manifest package="com.open.file.manager"
+    android:versionCode="1"
+    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock.Light"
+        android:allowBackup="true" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:permission="android.permission.WRITE_EXTERNAL_STORAGE" android:name=".cutcopyservice"></service>
+    </application>
+
+</manifest>

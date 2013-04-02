@@ -1,0 +1,57 @@
+<!--
+  Copyright (c) 2013 Michele Corazza.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the GNU Public License v3.0
+  which accompanies this distribution, and is available at
+  http://www.gnu.org/licenses/gpl.html
+  
+  Credits:
+  	Actionbarsherlock library: for the fragment support
+  	Oxygen team: for the gorgeous icons
+-->
+<resources>
+
+    <string name="app_name">Open File Manager</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_MainActivity">Open File Manager</string>
+    <string name="title_activity_viewfiles">Viewfiles</string>
+    <string name="cut">Cut</string>
+    <string name="move">Move</string>
+    <string name="copy">Copy</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
+    <string name="cantread">The file cannot be opened: you don\'t have permission to read it</string>
+    <string name="cantopendir">The directory cannot be opened: you don\'t have permission to read it</string>
+    <string name="cantrename">The file cannot be rename: you don\'t have permission to write it</string>
+    <string name="cancel">Cancel</string>
+    <string name="askremove">Are you sure you want to remove selected files?</string>
+    <string name="error">Error</string>
+    <string name="renametext">Type new filename</string>
+	<string name="wannaremovenowriteable">The following files cannot be removed, do you want to proceed anyway?</string>
+	<string name="ignore">Ignore</string>
+	<string name="paste">Paste</string>
+	<string name="renameexists">Impossible to remove file, filename already exists</string>
+	<string name="newdir">Create folder</string>
+	<string name="settings">Settings</string>
+	<string name="about">About</string>
+	<string name="overwritefile">Overwrite all files</string>
+	<string name="overwrite">Overwrite</string>
+	<string name="skip">Skip</string>
+	<string name="filefolderconflict">A %1$s named %2$s is already in %3$s, provide a new name or skip file</string>
+	<string name="completed">File operation complete:</string>
+	<string name="succesfulcopy">%1$s of files successfully %2$s </string>
+	<string name="cantwritedir">Cannot write to target direcory, aborting file operation</string>
+	<string name="samefolder">You are trying to copy file or folders over themselvs. Aborting file operation</string>
+	<string name="notenoughspace">Cannot perform %1$s, not enough space on the partition</string>
+	<string name="unknownerror">Unknown error occurred, transfer aborted</string>
+	<string name="copypast">copied</string>
+	<string name="movepast">moved</string>
+	<string name="copyger">Copying</string>
+	<string name="moveger">Moving</string>
+	<string name="typedirname">Type new folder name</string>
+	<string name="newfolder">New Folder</string>
+	<string name="newdirexists">A folder with chosen name already exists, choose another one</string>
+	<string name="invalidname">Chosen name for directory is empty, choose another one</string>
+	
+</resources>
