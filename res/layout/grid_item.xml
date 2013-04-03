@@ -17,7 +17,9 @@
     android:background="@color/white"
     android:focusable="false"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp" >
    
    <ImageView android:id="@+id/grid_item_image"
       android:layout_width="wrap_content"
@@ -29,7 +31,8 @@
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
       android:textColor="#000000"
-      android:lines="2"
+      android:textSize="14sp"
+      android:lines="3"
       >
    </CheckedTextView>
    
