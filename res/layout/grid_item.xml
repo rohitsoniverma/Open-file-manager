@@ -30,9 +30,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
-      android:textColor="#000000"
+      android:textColor="@color/black"
       android:textSize="14sp"
-      android:lines="3"
+      android:lines="2"
       >
    </CheckedTextView>
    

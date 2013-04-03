@@ -99,8 +99,14 @@ public class PathSelectionAdapter extends BaseAdapter {
         }
         TextView tv = (TextView)convertView.findViewById(R.id.pathtext);
         if(bookmarkspaths.size()!=1)
+        {	if(bookmarkspaths.get(position)==Environment.getExternalStorageDirectory())
+        	{
+        		tv.setText("Sdcard");
+        	}
+        else
         {
-        tv.setText((bookmarkspaths.get(position)).getName());
+        	tv.setText((bookmarkspaths.get(position)).getName());
+        }
         }
         else
         {
