@@ -34,7 +34,7 @@ public class iconLoader
 	private asyncimgload getbitmaptask;
 	private static Context mycont;
     private final Bitmap genericicon;
-	static final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(5);
+	static final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
 
 	
 	public iconLoader(Context ct)
@@ -55,6 +55,7 @@ public class iconLoader
 	    icons.put("application", R.drawable.applicationgeneric);
 	    icons.put("video", R.drawable.videogeneric);
 	    icons.put("text", R.drawable.textgeneric);
+	    icons.put("directory", R.drawable.directory);
 	    //icons.put("application/vnd.android.package-archive", R.drawable.apk);
 	    icons.put("image", R.drawable.imagegeneric);
 		
