@@ -80,15 +80,20 @@ fileOperations.dialogserviceinterface{
 		super.onCreate(savedInstanceState);
 		int i=0;
 		actcontext = getApplicationContext();
+		Log.d("savedinstance", Boolean.toString(savedInstanceState==null));
 		if(savedInstanceState != null)
 		{
+		Log.d("i am", "restoring");
 		ArrayList<String> fragmentpaths=savedInstanceState.getStringArrayList("fragments");
-		if(fragments.size() != fragmentpaths.size()+1)
+		if(fragmentpaths !=null)
+		{
+			fragments.clear();
 		for(i=0; i<fragmentpaths.size(); i++)
 		{
 			File root=new File(fragmentpaths.get(i));
 			Log.d("wtf", root.getAbsolutePath());
 			fragments.add(Gridfragment.newInstance(root));
+		}
 		}
 		}
 
@@ -124,11 +129,7 @@ fileOperations.dialogserviceinterface{
 		currentfr.ChangePath(newroot);
 	}
 	
-	@Override
-	public List<String> onRetainCustomNonConfigurationInstance ()
-	{
-		return mAdapter.getfragments();
-	}
+
 	
 	@Override
 	public void onPathSelected(File clicked) {

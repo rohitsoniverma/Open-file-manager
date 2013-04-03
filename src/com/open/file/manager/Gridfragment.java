@@ -78,11 +78,24 @@ public class Gridfragment extends SherlockFragment
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
 		firstrun=true;
+		if(currentdir==null)
+		{
+			String path=savedInstanceState.getString("currentdir");
+			currentdir=new File(path);
+		}
+	}
+	
+	@Override
+	public void onSaveInstanceState (Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putString("currentdir", currentdir.getAbsolutePath());
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+	Log.d("inflater null?", Boolean.toString(inflater==null));
 	v = inflater.inflate(R.layout.activity_viewfiles, container, false);
 	grid=(GridView) v.findViewById(R.id.listfilesgrid);
 	myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
