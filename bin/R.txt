@@ -426,9 +426,11 @@ int string copy 0x7f090016
 int string copyger 0x7f090033
 int string copypast 0x7f090031
 int string cut 0x7f090014
+int string dateformat 0x7f09003a
 int string delete 0x7f090017
 int string error 0x7f09001e
 int string filefolderconflict 0x7f09002a
+int string fileinfo 0x7f090039
 int string hello_world 0x7f090010
 int string ignore 0x7f090021
 int string invalidname 0x7f090038

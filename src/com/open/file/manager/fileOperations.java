@@ -143,6 +143,7 @@ public class fileOperations
 	            }
 			});
 		}
+		builder.setCancelable(false);
 		builder.setNegativeButton(R.string.skip, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -351,5 +352,24 @@ public class fileOperations
 		});
 		dialbuild.setNegativeButton("Cancel",null);
 		dialbuild.create().show();
+	}
+	
+	public static String gethumansize(long bytesize) {
+		long dividefactor;
+		String unit;
+		if (bytesize >= 1073741824) {
+			dividefactor = 1073741824;
+			unit = "GiB";
+		} else if (bytesize >= 1048576) {
+			dividefactor = 1048576;
+			unit = "MiB";
+		} else if (bytesize >= 1024) {
+			dividefactor = 1024;
+			unit = "GiB";
+		} else {
+			dividefactor = 1;
+			unit = "B";
+		}
+		return new String(Long.toString(bytesize / dividefactor) + " " + unit);
 	}
 }

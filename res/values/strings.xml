@@ -53,5 +53,6 @@
 	<string name="newfolder">New Folder</string>
 	<string name="newdirexists">A folder with chosen name already exists, choose another one</string>
 	<string name="invalidname">Chosen name for directory is empty, choose another one</string>
-	
+	<string name="fileinfo">Name: \n%1$s\nSize: %2$s\nLast Modifiled: %3$s</string>
+	<string name="dateformat">YYYY-MM-DD HH:mm</string>
 </resources>

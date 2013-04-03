@@ -115,24 +115,7 @@ public class cutcopyservice extends IntentService {
 		return current.size > (long)targetfs.getAvailableBlocks()*(long)targetfs.getBlockSize();
 	}
 
-	private String gethumansize(long bytesize) {
-		long dividefactor;
-		String unit;
-		if (bytesize >= 1073741824) {
-			dividefactor = 1073741824;
-			unit = "GiB";
-		} else if (bytesize >= 1048576) {
-			dividefactor = 1048576;
-			unit = "MiB";
-		} else if (bytesize >= 1024) {
-			dividefactor = 1024;
-			unit = "GiB";
-		} else {
-			dividefactor = 1;
-			unit = "B";
-		}
-		return new String(Long.toString(bytesize / dividefactor) + " " + unit);
-	}
+	
 
 	private void updateprogress() {
 		String progressstring;
@@ -141,7 +124,7 @@ public class cutcopyservice extends IntentService {
 			String completed=getResources().getString(R.string.completed);
 			String actionpast=getResources().getString(actionspast[currentaction]);
 			String finished=getResources().getString(R.string.succesfulcopy);
-			finished=String.format(finished, gethumansize(totalbytes), actionpast);
+			finished=String.format(finished, fileOperations.gethumansize(totalbytes), actionpast);
 			finishbuilder.setContentText(finished);
 			finishbuilder.setContentTitle(completed);
 			finishbuilder.setSmallIcon(R.drawable.complete);
@@ -156,8 +139,8 @@ public class cutcopyservice extends IntentService {
 			cutcopynotification.contentView.setProgressBar(R.id.progressBar, 100,
 					progresspercent, false);
 			Log.d("percentage", Integer.toString(progresspercent));
-			progressstring = gethumansize(progressbytes) + "/"
-					+ gethumansize(totalbytes);
+			progressstring = fileOperations.gethumansize(progressbytes) + "/"
+					+ fileOperations.gethumansize(totalbytes);
 			cutcopynotification.contentView.setTextViewText(R.id.textprogress,
 					progressstring);
 			cutcopymanager.notify(id, cutcopynotification);

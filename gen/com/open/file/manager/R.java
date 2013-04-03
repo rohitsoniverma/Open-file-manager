@@ -1141,9 +1141,11 @@ containing a value of this type.
         public static final int copyger=0x7f090033;
         public static final int copypast=0x7f090031;
         public static final int cut=0x7f090014;
+        public static final int dateformat=0x7f09003a;
         public static final int delete=0x7f090017;
         public static final int error=0x7f09001e;
         public static final int filefolderconflict=0x7f09002a;
+        public static final int fileinfo=0x7f090039;
         public static final int hello_world=0x7f090010;
         public static final int ignore=0x7f090021;
         public static final int invalidname=0x7f090038;

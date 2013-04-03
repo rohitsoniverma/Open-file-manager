@@ -12,9 +12,12 @@
 package com.open.file.manager;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -490,13 +493,19 @@ public  Callback getcallback() {
 			View askdialogview= inflater.inflate(R.layout.conflictdialog, null);
 			builder.setView(askdialogview);
 			TextView srcdescr=(TextView) askdialogview.findViewById(R.id.srcdescr);
-			Log.d(src.toString(), dst.toString());
-			String srcinfo= src.getName()+"\n"+src.length()+"\nLast modified:"+src.lastModified();
+			DateFormat dateform=DateFormat.getDateTimeInstance();
+			String format=getResources().getString(R.string.fileinfo);
+			Date srcdate=new Date(src.lastModified());
+			
+			String srcsize=fileOperations.gethumansize(src.length());
+			String srcinfo= String.format(format, src.getName(), srcsize, dateform.format(srcdate));
 			srcdescr.setText(srcinfo);
 			srcdescr.setCompoundDrawables(null, loader.loadConflictico(src), null, null);
 			
+			String dstsize=fileOperations.gethumansize(dst.length());
+			Date dstdate=new Date(dst.lastModified());
 			TextView dstdescr=(TextView) askdialogview.findViewById(R.id.dstdescr);
-			String dstinfo= dst.getName()+"\n"+dst.length()+"\nLast modified:"+dst.lastModified();
+			String dstinfo= String.format(format, dst.getName(), dstsize, dateform.format(dstdate));
 			dstdescr.setText(dstinfo);
 			dstdescr.setCompoundDrawables(null, loader.loadConflictico(dst),null, null);
 			
