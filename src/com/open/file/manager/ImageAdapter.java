@@ -13,12 +13,9 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Hashtable;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -31,7 +31,6 @@ public class iconLoader
 {
 	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory() / 1024)/6);;
 	private final LruCache<String,Bitmap> bitmapCache;
-	private asyncimgload getbitmaptask;
 	private static Context mycont;
     private final Bitmap genericicon;
 	static final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);

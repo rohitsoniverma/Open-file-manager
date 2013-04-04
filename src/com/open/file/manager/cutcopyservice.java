@@ -13,7 +13,6 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,13 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 
 public class cutcopyservice extends IntentService {
@@ -50,8 +47,8 @@ public class cutcopyservice extends IntentService {
 	public static NotificationManager cutcopymanager;
 	private NotificationCompat.Builder cutcopybuilder;
 	private RemoteViews progressview;
-	private FileCopyTree tree;
-	private ArrayList<fileDuplicate> duplicates;
+	private static FileCopyTree tree;
+	private static ArrayList<fileDuplicate> duplicates;
 	private int id;
 	private long progressbytes = 0;
 	private int progresspercent = 0;
@@ -66,14 +63,7 @@ public class cutcopyservice extends IntentService {
 		int i = 0;
 		FileCopyNode current;
 		totalbytes = tree.size;
-		mHandler = new Handler() {
-			public void handleMessage(Message msg) {
-				Log.d("duplicate", "found");
-				duplicates = msg.getData().getParcelableArrayList("duplicates");
-				updateduplicates(duplicates, tree.children);
-				Looper.myLooper().quit();
-			}
-		};
+		mHandler = new dupresponcehandler();
 
 		while (i < tree.children.size()) {
 			try {
@@ -147,7 +137,7 @@ public class cutcopyservice extends IntentService {
 		}
 	}
 
-	protected void updateduplicates(ArrayList<fileDuplicate> newduplic,
+	protected static void updateduplicates(ArrayList<fileDuplicate> newduplic,
 			List<FileCopyNode> files) {
 		tree.duplicates = newduplic;
 		fileDuplicate currentdup;
@@ -298,4 +288,14 @@ public class cutcopyservice extends IntentService {
 		performcutcopy();
 	}
 
+	static class dupresponcehandler extends Handler
+	{
+		@Override
+		public void handleMessage(Message msg) {
+			Log.d("duplicate", "found");
+			duplicates = msg.getData().getParcelableArrayList("duplicates");
+			updateduplicates(duplicates, tree.children);
+			Looper.myLooper().quit();
+		}
+	}
 }

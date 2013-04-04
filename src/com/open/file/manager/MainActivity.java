@@ -13,23 +13,17 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +31,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +64,7 @@ fileOperations.dialogserviceinterface{
 	public static ActionMode mMode;
 	public static ActionMode copycutmode;
 	public static ViewPager mPager;
-	fileOperations operator;
+	static fileOperations operator;
 	int currentaction;
 	public static Handler dupHandler;
 	@Override
@@ -113,14 +106,7 @@ fileOperations.dialogserviceinterface{
 		}
 		curfrag=mAdapter.getcurrentfrag();
 		mPager.setCurrentItem(curfrag);
-		dupHandler=new Handler()
-		{
-            public void handleMessage(Message msg) {
-            	fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
-            	operator.askconflicts(fileOperations.conflicts, false, false, 0);
-            	fileOperations.conflicts.clear();
-            }
-		};
+		dupHandler=new duplicatehandler();
 	}
 
 	public void changeFragmentPath(int fragnum, File newroot)
@@ -182,9 +168,9 @@ fileOperations.dialogserviceinterface{
 	protected void onPause()
 	{
 		super.onPause();
-		if(operator.currentdialog!=null && operator.currentdialog.isShowing())
+		if(fileOperations.currentdialog!=null && fileOperations.currentdialog.isShowing())
 		{
-			operator.currentdialog.dismiss();
+			fileOperations.currentdialog.dismiss();
 		}
 	}
 
@@ -471,7 +457,16 @@ public  Callback getcallback() {
 	public void showdialog(int titlebar, int content) {
 			displaysimpledialog(titlebar, content);
 	}
-
+	
+	static class duplicatehandler extends Handler
+	{
+		@Override
+		public void handleMessage(Message msg) {
+        	fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
+        	operator.askconflicts(fileOperations.conflicts, false, false, 0);
+        	fileOperations.conflicts.clear();
+        }
+	}
 	
 	public Builder showConflictdialog(fileDuplicate conflict) {
 		AlertDialog.Builder builder;
