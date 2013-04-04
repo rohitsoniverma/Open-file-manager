@@ -13,20 +13,14 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import com.open.file.manager.Gridfragment.Gridviewlistener;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
@@ -37,7 +31,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class fileOperations
 {
@@ -47,6 +40,9 @@ public class fileOperations
 	String currentpath;
 	dialogserviceinterface filecback;
 	MainActivity act;
+	public static AlertDialog currentdialog;
+	public static List<String> cutcopyqueue;
+	public static ArrayList<fileDuplicate> conflicts;
 
 	
 	public fileOperations(Context appcont, MainActivity myact)
@@ -151,7 +147,8 @@ public class fileOperations
             	askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
             }
 		});
-		builder.create().show();
+		currentdialog=builder.create();
+		currentdialog.show();
 	}
 	
 	public void startcutcopyservice(String targetfolder)
@@ -183,9 +180,13 @@ public class fileOperations
  		   }
  		   else
  		   {
+ 			   if(current.exists())
+ 			   {
  			   current.delete();
+ 			   }
  		   }
  	   }
+		operationqueue.clear();
 		act.refreshcurrentgrid();
 	}
 	
@@ -198,6 +199,7 @@ public class fileOperations
 
 	public void removefiles(List<File> selectedfiles)
 	{
+		currentaction=consts.ACTION_REMOVE;
 		final List <File> notwriteable= new ArrayList<File>();
 		for (int i=0; i<selectedfiles.size(); i++)
 		{
@@ -220,7 +222,6 @@ public class fileOperations
                public void onClick(DialogInterface dialog, int id) {
             	   if(notwriteable.size()>0)
             	   {
-            		   dialog.dismiss();
             		   wannaremovenowriteable(notwriteable);
             	   }
             	   else
@@ -231,8 +232,8 @@ public class fileOperations
                }
 	});
 		builder.setNegativeButton(R.string.cancel, null);
-		AlertDialog dialog = builder.create();
-		dialog.show();
+		currentdialog = builder.create();
+		currentdialog.show();
 	}
 	
 	public void wannaremovenowriteable(List<File> nowriteable)
@@ -250,14 +251,16 @@ public class fileOperations
             }
 		});
 		builder.setNegativeButton(R.string.cancel,null);
-		AlertDialog dialog= builder.create();
-		dialog.show();
+		currentdialog= builder.create();
+		currentdialog.show();
 		return;
 	}
 	
 	public void renamefile(List<File> selectedfiles)
 	{
 		final File rename=selectedfiles.get(0);
+		operationqueue.add(rename);
+		currentaction=consts.ACTION_RENAME;
 		if(rename.canWrite())
 		{
 			String renamestring = act.getResources().getString(R.string.rename);
@@ -273,17 +276,20 @@ public class fileOperations
 						if(!newfile.exists())
 						{
 						rename.renameTo(newfile);
+						operationqueue.clear();
 						act.refreshcurrentgrid();
 						}
 						else
 						{
+							operationqueue.clear();
 							act.displaysimpledialog(R.string.error, R.string.renameexists);
 						}
 					}
 				}
 				
 			});
-			dialbuild.create().show();
+			currentdialog=dialbuild.create();
+			currentdialog.show();
 
 		}
 		else
@@ -323,6 +329,8 @@ public class fileOperations
     }
 
 	public void createfolder(final String currentpath, final int message) {
+		currentaction=consts.ACTION_MKDIR;
+		operationqueue.add(new File(currentpath));
 		String newfolder=act.getResources().getString(R.string.newfolder);
 		String typenew=act.getResources().getString(message);
 		AlertDialog.Builder dialbuild=act.gettextdialog(typenew, newfolder);
@@ -341,6 +349,7 @@ public class fileOperations
 					if(newname.toString().length()>0)
 					{
 						newdirfile.mkdir();
+						operationqueue.clear();
 						act.refreshcurrentgrid();
 					}
 					else
@@ -351,7 +360,8 @@ public class fileOperations
 			}
 		});
 		dialbuild.setNegativeButton("Cancel",null);
-		dialbuild.create().show();
+		currentdialog=dialbuild.create();
+		currentdialog.show();
 	}
 	
 	public static String gethumansize(long bytesize) {

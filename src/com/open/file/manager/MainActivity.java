@@ -54,14 +54,10 @@ public class MainActivity extends SherlockFragmentActivity
 implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewlistener, 
 fileOperations.dialogserviceinterface{
 
-
-	public final int ACTION_COPY=0;
-	public final int ACTION_MOVE=1;
 	
 	public static List<Boolean> firstrun=new ArrayList<Boolean>();
 	boolean wannaclose;
 	static int selectedcount =0;
-	public final int INDEX_RENAME=3;
 	public static boolean tobeclosed=false;
 	public static Context actcontext;
 	public static String initpath;
@@ -120,8 +116,9 @@ fileOperations.dialogserviceinterface{
 		dupHandler=new Handler()
 		{
             public void handleMessage(Message msg) {
-            	ArrayList<fileDuplicate> duplicates = msg.getData().getParcelableArrayList("duplicates");
-            	operator.askconflicts(duplicates, false, false, 0);
+            	fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
+            	operator.askconflicts(fileOperations.conflicts, false, false, 0);
+            	fileOperations.conflicts.clear();
             }
 		};
 	}
@@ -157,7 +154,7 @@ fileOperations.dialogserviceinterface{
 			selectedcount++;
 			if(selectedcount==2)
 			{
-				mMode.getMenu().getItem(INDEX_RENAME).setVisible(false);
+				mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(false);
 			}
 			if(mMode == null)
 			{
@@ -171,13 +168,23 @@ fileOperations.dialogserviceinterface{
 			selectedcount--;
 			if(selectedcount==1)
 			{
-				mMode.getMenu().getItem(INDEX_RENAME).setVisible(true);
+				mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(true);
 			}
 			if(selectedcount == 0)
 			{
 				mMode.finish();
 				mMode=null;
 			}
+		}
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		if(operator.currentdialog!=null && operator.currentdialog.isShowing())
+		{
+			operator.currentdialog.dismiss();
 		}
 	}
 
@@ -202,7 +209,7 @@ fileOperations.dialogserviceinterface{
 				selectedcount--;
 				if(selectedcount==1)
 				{
-					mMode.getMenu().getItem(INDEX_RENAME).setVisible(true);
+					mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(true);
 				}
 				if(selectedcount == 0)
 				{
@@ -217,7 +224,7 @@ fileOperations.dialogserviceinterface{
 				selectedcount++;
 				if(selectedcount==2)
 				{
-					mMode.getMenu().getItem(INDEX_RENAME).setVisible(false);
+					mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(false);
 				}
 			}
 			return true;
@@ -302,6 +309,7 @@ fileOperations.dialogserviceinterface{
 
 	}
 	
+	
 	public void refreshcurrentgrid()
 	{
 		int fragnum= mPager.getCurrentItem();
@@ -338,13 +346,13 @@ public  Callback getcallback() {
 		switch(item.getItemId())
 		{
 		case (R.id.cut):
-			currentaction=ACTION_MOVE;
+			currentaction=consts.ACTION_CUT;
 			operationqueue.addAll(selectedfiles);
 			delaystartpaste();
 			mode.finish();
 			return true;
 		case(R.id.copy):
-			currentaction=ACTION_COPY;
+			currentaction=consts.ACTION_COPY;
 			operationqueue.addAll(selectedfiles);
 			delaystartpaste();
 			mode.finish();
