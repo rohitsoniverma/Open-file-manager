@@ -481,7 +481,6 @@ public  Callback getcallback() {
 		public void handleMessage(Message msg) {
         	fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
         	operator.askconflicts(fileOperations.conflicts, false, false, 0);
-        	fileOperations.conflicts.clear();
         }
 	}
 	

@@ -60,30 +60,31 @@ public class fileOperations
 	    return false;
 	}
 	
-	protected void askconflicts(final ArrayList<fileDuplicate> conflicts,final boolean overwritefiles,
+	protected void askconflicts(final ArrayList<fileDuplicate> duplicates,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
 		AlertDialog.Builder builder;
 		Log.d(Integer.toString(conflicts.size()), Integer.toString(current));
-		if(conflicts.size()<=current)
+		if(conflicts.size()<=current && duplicates.equals(conflicts))
 		{
 			Message dupmsg=Message.obtain();
 			Bundle dupdata= new Bundle();
-			dupdata.putParcelableArrayList("duplicates", conflicts);
+			dupdata.putParcelableArrayList("duplicates", duplicates);
 			dupmsg.setData(dupdata);
+			conflicts.clear();
 			if(isMyServiceRunning() && cutcopyservice.mHandler!=null)
 			{
 			cutcopyservice.mHandler.sendMessage(dupmsg);
 			}
 			return;
 		}
-		final fileDuplicate conflict= conflicts.get(current);
+		final fileDuplicate conflict= duplicates.get(current);
 		if(conflict.processed)
 		{
 			if(conflict.childDuplicates.size()>0)
 			{
 				askconflicts(conflict.childDuplicates, overwritefiles, overwritefolders, 0);
 			}
-			askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+			askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 		}
 		if(conflict.type==1)
 		{
@@ -94,7 +95,7 @@ public class fileOperations
 				{
 					askconflicts(conflict.childDuplicates, overwritefiles, overwritefolders, 0);
 				}
-				askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+				askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 				return;
 			}
 		}
@@ -103,7 +104,7 @@ public class fileOperations
 			if(overwritefiles)
 			{
 				conflict.overwrite=true;
-				askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+				askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 				return;
 			}
 		}
@@ -116,7 +117,7 @@ public class fileOperations
 	            	Editable newname=((EditText)((AlertDialog) dialog).findViewById(R.id.newfilename)).getText();
 	            	conflict.overwrite=true;
 	            	conflict.newname=newname.toString();
-	            	askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+	            	askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 	            }
 			});
 		}
@@ -137,7 +138,7 @@ public class fileOperations
 	            	}
 	            	else
 	            	{
-	            	askconflicts(conflicts, overwrite.isChecked(), overwritefolders, current+1);
+	            	askconflicts(duplicates, overwrite.isChecked(), overwritefolders, current+1);
 	            	}
 	            }
 			});
@@ -147,7 +148,7 @@ public class fileOperations
             @Override
             public void onClick(DialogInterface dialog, int id) {
             	conflict.overwrite=false;
-            	askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+            	askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
             }
 		});
 		currentdialog=builder.create();
