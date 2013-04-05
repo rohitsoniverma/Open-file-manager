@@ -3,6 +3,7 @@ package com.open.file.manager;
 public class consts
 {
 	//Operation indexes
+	static final int ACTION_NONE=-1;
 	static final int ACTION_COPY=0;
 	static final int ACTION_CUT=1;
 	static final int ACTION_RENAME=2;

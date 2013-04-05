@@ -98,9 +98,9 @@ public class Gridfragment extends SherlockFragment
 	Log.d("inflater null?", Boolean.toString(inflater==null));
 	v = inflater.inflate(R.layout.activity_viewfiles, container, false);
 	grid=(GridView) v.findViewById(R.id.listfilesgrid);
-	myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
-	if(firstrun)
+	if(myimgad==null)
 	{
+	myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
 		grid.setAdapter(myimgad);
 		myimgad.notifyDataSetChanged();
 		grid.setOnItemClickListener(new OnItemClickListener() {
@@ -157,7 +157,6 @@ public class Gridfragment extends SherlockFragment
 				return true;
 			}
 		});
-		
 	}
 	return v;
 	}
@@ -185,6 +184,7 @@ public class Gridfragment extends SherlockFragment
 	{
 		myimgad.changepath(currentdir);
 		myimgad.notifyDataSetChanged();
+		grid.invalidateViews();
 	}
 	
 	public void onAttach(Activity activity) {

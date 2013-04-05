@@ -121,6 +121,7 @@ public class cutcopyservice extends IntentService {
 			finishbuilder.setContentIntent(contentIntent);
 			cutcopymanager.notify(id+1, finishbuilder.build());
 			stopForeground(true);
+			super.onDestroy();
 			return;
 		}
 		if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
@@ -139,7 +140,6 @@ public class cutcopyservice extends IntentService {
 
 	protected static void updateduplicates(ArrayList<fileDuplicate> newduplic,
 			List<FileCopyNode> files) {
-		tree.duplicates = newduplic;
 		fileDuplicate currentdup;
 		int i, j = 0;
 		for (i = 0; i < files.size(); i++) {
@@ -294,6 +294,7 @@ public class cutcopyservice extends IntentService {
 		public void handleMessage(Message msg) {
 			Log.d("duplicate", "found");
 			duplicates = msg.getData().getParcelableArrayList("duplicates");
+			tree.duplicates=duplicates;
 			updateduplicates(duplicates, tree.children);
 			Looper.myLooper().quit();
 		}

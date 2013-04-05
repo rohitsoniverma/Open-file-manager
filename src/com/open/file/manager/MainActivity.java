@@ -44,8 +44,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.open.file.manager.ImageAdapter.Gridviewholder;
 
 public class MainActivity extends SherlockFragmentActivity 
-implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewlistener, 
-fileOperations.dialogserviceinterface{
+implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewlistener
+{
 
 	
 	public static List<Boolean> firstrun=new ArrayList<Boolean>();
@@ -67,6 +67,7 @@ fileOperations.dialogserviceinterface{
 	static fileOperations operator;
 	int currentaction;
 	public static Handler dupHandler;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,6 +108,18 @@ fileOperations.dialogserviceinterface{
 		curfrag=mAdapter.getcurrentfrag();
 		mPager.setCurrentItem(curfrag);
 		dupHandler=new duplicatehandler();
+		restoreOperations(savedInstanceState);
+	}
+
+	private void restoreOperations(Bundle savedInstanceState) {
+		if(savedInstanceState != null && savedInstanceState.containsKey("conflicts"))
+		{
+		fileOperations.conflicts=savedInstanceState.getParcelableArrayList("conflicts");
+		if(fileOperations.conflicts.size()>0)
+		{
+			operator.askconflicts(fileOperations.conflicts, false,false, 0);
+		}
+		}
 	}
 
 	public void changeFragmentPath(int fragnum, File newroot)
@@ -180,6 +193,10 @@ fileOperations.dialogserviceinterface{
 		super.onSaveInstanceState(outState);
 		ArrayList<String> gridfragments= mAdapter.getfragments();
 		outState.putStringArrayList("fragments", gridfragments);
+		if(fileOperations.conflicts!= null && fileOperations.conflicts.size()>0)
+		{
+		outState.putParcelableArrayList("conflicts", fileOperations.conflicts);
+		}
 	}
 	
 	
@@ -190,7 +207,7 @@ fileOperations.dialogserviceinterface{
 		{
 			if(holder.filename.isChecked())
 			{
-				selectedfiles.remove(clicked.getAbsolutePath());
+				selectedfiles.remove(clicked);
 				holder.filename.setChecked(false);
 				selectedcount--;
 				if(selectedcount==1)

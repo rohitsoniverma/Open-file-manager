@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
@@ -38,7 +37,6 @@ public class fileOperations
 	int currentaction;
 	static List<File> operationqueue = new ArrayList<File>();
 	String currentpath;
-	dialogserviceinterface filecback;
 	MainActivity act;
 	public static AlertDialog currentdialog;
 	public static List<String> cutcopyqueue;
@@ -51,10 +49,6 @@ public class fileOperations
 		act=myact;
 	}
 	
-	public interface dialogserviceinterface
-	{
-		//AlertDialog.Builder showConflictdialog(fileDuplicate conflict);
-	}
 	
 	private boolean isMyServiceRunning() {
 	    ActivityManager manager = (ActivityManager) act.getSystemService(Context.ACTIVITY_SERVICE);
@@ -69,7 +63,8 @@ public class fileOperations
 	protected void askconflicts(final ArrayList<fileDuplicate> conflicts,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
 		AlertDialog.Builder builder;
-		if(conflicts.size()==current)
+		Log.d(Integer.toString(conflicts.size()), Integer.toString(current));
+		if(conflicts.size()<=current)
 		{
 			Message dupmsg=Message.obtain();
 			Bundle dupdata= new Bundle();
@@ -82,6 +77,14 @@ public class fileOperations
 			return;
 		}
 		final fileDuplicate conflict= conflicts.get(current);
+		if(conflict.processed)
+		{
+			if(conflict.childDuplicates.size()>0)
+			{
+				askconflicts(conflict.childDuplicates, overwritefiles, overwritefolders, 0);
+			}
+			askconflicts(conflicts, overwritefiles, overwritefolders, current+1);
+		}
 		if(conflict.type==1)
 		{
 			if(overwritefolders)
@@ -316,17 +319,6 @@ public class fileOperations
 		operationqueue.clear();
 	}
 	
-	public void onAttach(Activity activity) {
-        
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-        	filecback = (dialogserviceinterface) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnPathSelectedListener");
-        }
-    }
 
 	public void createfolder(final String currentpath, final int message) {
 		currentaction=consts.ACTION_MKDIR;

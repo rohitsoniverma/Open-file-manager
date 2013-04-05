@@ -125,7 +125,8 @@ class fileDuplicate implements Parcelable
 {
 	File src;
 	File dst;
-	Boolean overwrite;
+	Boolean overwrite=false;
+	Boolean processed=false;
 	//1 per conflitto fra dir, 2 per conflitto dir/file o viceversa, 3 per file/file
 	int type;
 	String newname;
@@ -183,7 +184,8 @@ class fileDuplicate implements Parcelable
 	public void readFromParcel(Parcel in) {
 		src=new File(in.readString());
 		dst=new File(in.readString());
-		overwrite=(in.readInt()>0);
+		overwrite=(in.readInt()==1);
+		processed=(in.readInt()==1);
 		type=in.readInt();
 		in.readTypedList(childDuplicates, fileDuplicate.CREATOR);
 	}
@@ -192,7 +194,8 @@ class fileDuplicate implements Parcelable
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(src.getAbsolutePath());
 		dest.writeString(dst.getAbsolutePath());
-		dest.writeInt(overwrite ? 0 : 1 );
+		dest.writeInt(overwrite ? 1 : 0 );
+		dest.writeInt(processed ? 1 : 0);
 		dest.writeInt(type);
 		dest.writeTypedList(childDuplicates);
 	}
