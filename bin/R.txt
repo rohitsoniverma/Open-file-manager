@@ -426,7 +426,6 @@ int string copy 0x7f090016
 int string copyger 0x7f090033
 int string copypast 0x7f090031
 int string cut 0x7f090014
-int string dateformat 0x7f09003a
 int string delete 0x7f090017
 int string error 0x7f09001e
 int string filefolderconflict 0x7f09002a
@@ -456,6 +455,7 @@ int string title_activity_MainActivity 0x7f090012
 int string title_activity_viewfiles 0x7f090013
 int string typedirname 0x7f090035
 int string unknownerror 0x7f090030
+int string waitingduplicate 0x7f09003a
 int string wannaremovenowriteable 0x7f090020
 int style AppTheme 0x7f0a0059
 int style DialogWindowTitle_Sherlock 0x7f0a0036

@@ -1141,7 +1141,6 @@ containing a value of this type.
         public static final int copyger=0x7f090033;
         public static final int copypast=0x7f090031;
         public static final int cut=0x7f090014;
-        public static final int dateformat=0x7f09003a;
         public static final int delete=0x7f090017;
         public static final int error=0x7f09001e;
         public static final int filefolderconflict=0x7f09002a;
@@ -1171,6 +1170,7 @@ containing a value of this type.
         public static final int title_activity_viewfiles=0x7f090013;
         public static final int typedirname=0x7f090035;
         public static final int unknownerror=0x7f090030;
+        public static final int waitingduplicate=0x7f09003a;
         public static final int wannaremovenowriteable=0x7f090020;
     }
     public static final class style {

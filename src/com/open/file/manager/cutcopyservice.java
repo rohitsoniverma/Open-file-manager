@@ -49,7 +49,7 @@ public class cutcopyservice extends IntentService {
 	private RemoteViews progressview;
 	private static FileCopyTree tree;
 	private static ArrayList<fileDuplicate> duplicates;
-	private int id;
+	private static int id;
 	private long progressbytes = 0;
 	private int progresspercent = 0;
 	private static long totalbytes;
@@ -57,6 +57,7 @@ public class cutcopyservice extends IntentService {
 	public final int[] actions=new int[] {R.string.copy, R.string.move};
 	public final int[] actioning=new int[] {R.string.copyger, R.string.moveger};
 	public final int[] actionspast=new int[] {R.string.copypast, R.string.movepast};
+	static String actiongerund;
 	PendingIntent contentIntent;
 
 	private void performcutcopy() {
@@ -69,7 +70,9 @@ public class cutcopyservice extends IntentService {
 			try {
 				current = tree.children.get(i);
 				if (current.duplicate != null && duplicates == null) {
-					Log.d("waiting message", "wtf");
+					String waitingdup=getResources().getString(R.string.waitingduplicate);
+					cutcopynotification.contentView.setTextViewText(R.id.progresstext, waitingdup);
+					cutcopymanager.notify(id, cutcopynotification);
 					Looper.loop();
 					Log.d("msg", "received");
 				}
@@ -243,7 +246,6 @@ public class cutcopyservice extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		String actiongerund;
 		progressview = new RemoteViews(
 				getApplicationContext().getPackageName(),
 				R.layout.progressbarlayout);
@@ -296,6 +298,8 @@ public class cutcopyservice extends IntentService {
 			duplicates = msg.getData().getParcelableArrayList("duplicates");
 			tree.duplicates=duplicates;
 			updateduplicates(duplicates, tree.children);
+			cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
+			cutcopymanager.notify(id, cutcopynotification);
 			Looper.myLooper().quit();
 		}
 	}
