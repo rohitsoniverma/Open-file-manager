@@ -44,35 +44,35 @@ public class Gridfragment extends SherlockFragment
 	/**
 	 * Create a new instance of CountingFragment, providing "num"
 	 * as an argument.
-	*/
-	
+	 */
+
 	public interface Gridviewlistener
 	{
 		public boolean onClickFile(File clicked, View item);
 		public void onLongclickfile(int position, int fragnum, View v, AdapterView<?> parent);
 		public void showdialog(int titlebar, int content);
 	}
-	
+
 	static Gridfragment newInstance(File initpath) {
 		Gridfragment f = new Gridfragment();
 		f.currentdir=initpath;
 		f.setRetainInstance(false);
 		return f;
 	}
-	
+
 	static Gridfragment newInstance(String initpath) {
 		Gridfragment f = new Gridfragment();
 		f.currentdir=new File(initpath);
 		return f;
 	}
-	
+
 	static Gridfragment newInstance(String initpath, List<String> initselectedfiles) {
 		Gridfragment f = new Gridfragment();
 		f.currentdir=new File(initpath);
 		f.selectedfiles=initselectedfiles;
 		return f;
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,23 +84,21 @@ public class Gridfragment extends SherlockFragment
 			currentdir=new File(path);
 		}
 	}
-	
+
 	@Override
 	public void onSaveInstanceState (Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
 		outState.putString("currentdir", currentdir.getAbsolutePath());
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-	Log.d("inflater null?", Boolean.toString(inflater==null));
-	v = inflater.inflate(R.layout.activity_viewfiles, container, false);
-	grid=(GridView) v.findViewById(R.id.listfilesgrid);
-	if(myimgad==null)
-	{
-	myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
+		Log.d("inflater null?", Boolean.toString(inflater==null));
+		v = inflater.inflate(R.layout.activity_viewfiles, container, false);
+		grid=(GridView) v.findViewById(R.id.listfilesgrid);
+		myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
 		grid.setAdapter(myimgad);
 		myimgad.notifyDataSetChanged();
 		grid.setOnItemClickListener(new OnItemClickListener() {
@@ -108,7 +106,7 @@ public class Gridfragment extends SherlockFragment
 					int position, long id) {
 				File clicked=myimgad.getItem(position);
 				if(!onclickcback.onClickFile(clicked, view))
-				
+
 					if(clicked.isDirectory())
 					{
 						if(clicked.canRead())
@@ -131,7 +129,7 @@ public class Gridfragment extends SherlockFragment
 							i.setDataAndType(Uri.fromFile(clicked), mimetype);
 							try
 							{
-							startActivity(i);
+								startActivity(i);
 							}
 							catch(Exception ex)
 							{
@@ -141,11 +139,11 @@ public class Gridfragment extends SherlockFragment
 						else
 						{
 							onclickcback.showdialog(R.string.cantread, R.string.error);
-							
+
 						}
 					}
 				myimgad.notifyDataSetChanged();
-		}
+			}
 		}
 				);
 		grid.setOnItemLongClickListener(new OnItemLongClickListener()
@@ -157,49 +155,48 @@ public class Gridfragment extends SherlockFragment
 				return true;
 			}
 		});
+		return v;
 	}
-	return v;
-	}
-	
+
 	public void ChangePath(File newroot)
 	{
 		currentdir=newroot;
 		myimgad.changepath(newroot);
 		grid.smoothScrollToPosition(0);
 	}
-	
+
 	public File GetParent()
 	{
 		File parent = currentdir.getParentFile();
 		Log.d("curfile", currentdir.getAbsolutePath());
 		return parent;
 	}
-	
+
 	public File getCurrentDir()
 	{
 		return currentdir;
 	}
-	
+
 	public void refreshFiles()
 	{
 		myimgad.changepath(currentdir);
 		myimgad.notifyDataSetChanged();
 		grid.invalidateViews();
 	}
-	
+
 	public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-        	onclickcback = (Gridviewlistener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnPathSelectedListener");
-        }
-    }
-	
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			onclickcback = (Gridviewlistener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement OnPathSelectedListener");
+		}
+	}
+
 
 	public void clearselection() {
 		myimgad.notifyDataSetChanged();
@@ -213,5 +210,5 @@ public class Gridfragment extends SherlockFragment
 		grid.invalidateViews();
 		grid.setAdapter(myimgad);
 	}
-	
+
 }
