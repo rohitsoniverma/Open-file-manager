@@ -90,7 +90,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		/*imposto l'adapter per i fragment*/
 		setContentView(R.layout.fragment_pager_layout);
 		mPager = (ViewPager)findViewById(R.id.pager);
-			mAdapter=new Fragmentadapter(getSupportFragmentManager(), fragments);
+			mAdapter=new Fragmentadapter(getSupportFragmentManager(), fragments, this);
 			mPager.setAdapter(mAdapter);
 			if(mAdapter.selectpathmissing())
 			{
@@ -134,6 +134,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		mAdapter.notifyDataSetChanged();
 		mPager.setAdapter(mAdapter);
 		mPager.setCurrentItem(fragnum);
+		setTitle(clicked.getName()==""? "/" : clicked.getName());
 	}
 
 	@Override

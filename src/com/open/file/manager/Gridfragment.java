@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class Gridfragment extends SherlockFragment
 		public boolean onClickFile(File clicked, View item);
 		public void onLongclickfile(int position, int fragnum, View v, AdapterView<?> parent);
 		public void showdialog(int titlebar, int content);
+		public void setTitle(CharSequence newtitle);
 	}
 
 	static Gridfragment newInstance(File initpath) {
@@ -161,6 +163,19 @@ public class Gridfragment extends SherlockFragment
 		currentdir=newroot;
 		myimgad.changepath(newroot);
 		grid.smoothScrollToPosition(0);
+		updateTitle();
+	}
+
+	private void updateTitle() {
+		Log.d("curr", currentdir.toString());
+		if(!currentdir.equals(new File("/")))
+		{
+			onclickcback.setTitle(currentdir.getName());
+		}
+		else
+		{
+			onclickcback.setTitle("/");
+		}
 	}
 
 	public File GetParent()

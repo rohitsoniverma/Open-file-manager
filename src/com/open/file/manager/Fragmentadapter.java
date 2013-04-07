@@ -24,11 +24,13 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 	// fragments to instantiate in the viewpager
 	   private List<SherlockFragment> fragments;
 	   private static int currentfrag = 0;
+	   private MainActivity mact;
 	   
 	   // constructor
-	   public Fragmentadapter(FragmentManager fm,List<SherlockFragment> fragments2) {
+	   public Fragmentadapter(FragmentManager fm,List<SherlockFragment> fragments2, MainActivity act) {
 	      super(fm);
-	      this.fragments = fragments2;
+	      fragments = fragments2;
+	      mact=act;
 	   }
 	   
 	   public void addFragment(SherlockFragment newFragment)
@@ -82,6 +84,15 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 				MainActivity.mMode.finish();
 				MainActivity.mMode=null;
 				MainActivity.mPager.setCurrentItem(position);
+			}
+			if(getItem(position) instanceof Gridfragment)
+			{
+				Gridfragment current=(Gridfragment) getItem(position);
+				mact.setTitle(current.currentdir.getName());
+			}
+			else
+			{
+				mact.setTitle("Open File Manager");
 			}
 			currentfrag=position;
 		}
