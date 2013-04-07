@@ -86,6 +86,7 @@ public class ImageAdapter extends BaseAdapter {
         else
         {
         	holder=(Gridviewholder) convertView.getTag();
+        	holder.fileicon.setImageResource(R.drawable.unknownfile);
         }
         holder.rootview=convertView;
         holder.associatedfile=dirfiles[position];
@@ -94,7 +95,7 @@ public class ImageAdapter extends BaseAdapter {
         File current=holder.associatedfile;
         tv.setText(current.getName());
         tv.setChecked(MainActivity.selectedfiles.contains(current));
-        loader.loadIcon(holder.fileicon, current);
+        loader.loadIcon(holder, position);
         
         if(tv.isChecked())
         {

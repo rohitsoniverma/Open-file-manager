@@ -15,6 +15,8 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 
+import com.open.file.manager.ImageAdapter.Gridviewholder;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -62,14 +64,14 @@ public class iconLoader
 		
 	}
 	
-	public void loadIcon(ImageView iv, File current)
+	public void loadIcon(Gridviewholder holder, int position)
 	{
-		WeakReference<ImageView> refiv=new WeakReference<ImageView>(iv);
-		String key=current.getAbsolutePath();
+		ImageView iv=holder.fileicon;
+		String key=holder.associatedfile.getAbsolutePath();
 		if(bitmapCache.get(key)==null)
 		{
 			iv.setImageBitmap(genericicon);
-			new asyncimgload(mycont, refiv, current).execute();
+			new asyncimgload(mycont, holder, position).execute();
 		}
 		else
 		{
@@ -154,15 +156,19 @@ public class iconLoader
 	class asyncimgload extends AsyncTask<Void, Void, Void>
 	{
 		Context cn;
+		Gridviewholder mholder;
 	    private WeakReference<ImageView> iv;
 		Bitmap icon;
 		File current;
+		int mposition;
 		
 		
-		public asyncimgload(Context mcontext, WeakReference<ImageView> img, File cur)
+		public asyncimgload(Context mcontext, Gridviewholder holder, int position)
 		{
-		iv=img;
-		current=cur;
+		mholder=holder;
+		mposition=position;
+		iv=new WeakReference<ImageView>(holder.fileicon);
+		current=holder.associatedfile;
 		Log.d("fff", "wtf");
 		cn = mcontext;
 		}
@@ -181,14 +187,20 @@ public class iconLoader
 		
 		@Override
 	    protected void onPostExecute(Void param) {
-			if(iv!=null && icon!=null)
+			if(mholder.position==mposition)
+			{
+			if(icon!=null)
 			{
 	    	ImageView iconview = iv.get();
+	    	if(iconview!= null)
+	    	{
 	    	iconview.setImageBitmap(icon);
 	    	if(bitmapCache.get(current.getAbsolutePath())==null)
 	    	{
 	    		bitmapCache.put(current.getAbsolutePath(), icon);
 	    	}
+			}
+			}
 			}
 	    }
 	}
