@@ -16,8 +16,10 @@ import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -87,6 +89,9 @@ public class iconLoader
 	    	String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath());
 			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 			String generictype;
+			String imgregexp="image/(jpg|jpeg|png)";
+			BitmapFactory.Options previewoptions=new BitmapFactory.Options();
+			previewoptions.inJustDecodeBounds=true;
 			try
 			{
 				generictype= mimetype.split("/")[0];
@@ -96,7 +101,15 @@ public class iconLoader
 			{
 				generictype=null;
 			}
-			if(mimetype != null && icons.containsKey(mimetype))
+			Log.d(mimetype, imgregexp);
+			if(mimetype != null && mimetype.matches(imgregexp))
+			{
+				BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
+				previewoptions.inSampleSize=getScaleratio(previewoptions);
+				previewoptions.inJustDecodeBounds=false;
+				icon=BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
+			}
+			else if(mimetype != null && icons.containsKey(mimetype))
 			{
 		        icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
 
@@ -113,6 +126,21 @@ public class iconLoader
 		return icon;
 	}
 	
+	private static int getScaleratio(Options bounds) {
+		final float scale = mycont.getResources().getDisplayMetrics().density;
+		final int targetHeight= Math.round(32*scale);
+		final int targetWidth=Math.round(32*scale);
+		int scaleratio=1;
+		if(bounds.outHeight> targetHeight || bounds.outWidth>targetWidth)
+		{
+			final int heightRatio=Math.round(bounds.outHeight/targetHeight);
+			final int widthRatio=Math.round(bounds.outWidth/targetWidth);
+			
+			scaleratio= heightRatio>widthRatio? heightRatio : widthRatio;
+		}
+		return scaleratio;
+	}
+
 	public Drawable loadConflictico(File current)
 	{
 		Drawable icodraw;
