@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -73,10 +72,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		super.onCreate(savedInstanceState);
 		int i=0;
 		actcontext = getApplicationContext();
-		Log.d("savedinstance", Boolean.toString(savedInstanceState==null));
 		if(savedInstanceState != null)
 		{
-		Log.d("i am", "restoring");
 		ArrayList<String> fragmentpaths=savedInstanceState.getStringArrayList("fragments");
 		if(fragmentpaths !=null)
 		{
@@ -84,7 +81,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		for(i=0; i<fragmentpaths.size(); i++)
 		{
 			File root=new File(fragmentpaths.get(i));
-			Log.d("wtf", root.getAbsolutePath());
 			fragments.add(Gridfragment.newInstance(root));
 		}
 		}
@@ -95,7 +91,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		setContentView(R.layout.fragment_pager_layout);
 		mPager = (ViewPager)findViewById(R.id.pager);
 			mAdapter=new Fragmentadapter(getSupportFragmentManager(), fragments);
-			mAdapter.printlist();
 			mPager.setAdapter(mAdapter);
 			if(mAdapter.selectpathmissing())
 			{
@@ -139,7 +134,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		mAdapter.notifyDataSetChanged();
 		mPager.setAdapter(mAdapter);
 		mPager.setCurrentItem(fragnum);
-		Log.d("path is:", clicked.getAbsolutePath());
 	}
 
 	@Override
@@ -426,7 +420,6 @@ public  Callback getcallback() {
 			switch(item.getItemId())
 			{
 			case(R.id.paste):
-				Log.d("i am", "here");
 				operator.handlepaste(operationqueue, getcurrentpath(),currentaction);
 				mode.finish();
 				return true;

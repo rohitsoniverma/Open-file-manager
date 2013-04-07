@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,10 +60,6 @@ public class PathSelectionAdapter extends BaseAdapter {
 			if(pictures.exists())
 			{
 			bookmarkspaths.add(pictures);
-			}
-			for(int i=0; i<bookmarkspaths.size(); i++)
-			{
-				Log.d(Integer.toString(i), bookmarkspaths.get(i).toString());
 			}
 		}
 		else {

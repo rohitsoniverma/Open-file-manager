@@ -17,7 +17,6 @@ import java.util.Arrays;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,6 @@ public class ImageAdapter extends BaseAdapter {
     
     @Override
     public int getCount() {
-    	Log.d("fragmentfilelist",Integer.toString(nfrag));
     	return dirfiles.length;
     }
     @Override
@@ -95,8 +93,7 @@ public class ImageAdapter extends BaseAdapter {
         File current=holder.associatedfile;
         tv.setText(current.getName());
         tv.setChecked(MainActivity.selectedfiles.contains(current));
-        loader.loadIcon(holder, position);
-        
+        loader.loadIcon(holder, position);   
         if(tv.isChecked())
         {
         	convertView.setBackgroundResource(R.color.cyan);

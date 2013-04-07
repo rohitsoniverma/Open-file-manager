@@ -16,7 +16,6 @@ import java.util.List;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -67,15 +66,8 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		/*myfm.beginTransaction().remove(oldfrag).commit();
 		myfm.beginTransaction().add(newFragment, null).commit();
 		myfm.executePendingTransactions();*/
-		printlist();
 }
 
-	public void printlist() {
-		for (int i=0; i<fragments.size(); i++)
-		{
-			Log.d("frammento["+Integer.toString(i)+"]", getItem(i).getClass().getName());
-		}
-		}
 
 	@Override
 	public void setPrimaryItem (ViewGroup container, int position, Object object)
@@ -83,7 +75,6 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		Gridfragment oldselectedgrid;
 		if(currentfrag!=position)
 		{
-			Log.d("fragposition",Integer.toString(position) );
 			if(MainActivity.mMode!=null)
 			{
 				oldselectedgrid=(Gridfragment) getItem(currentfrag);

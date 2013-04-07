@@ -18,7 +18,6 @@ import java.util.Hashtable;
 import com.open.file.manager.ImageAdapter.Gridviewholder;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -27,7 +26,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
@@ -97,18 +95,17 @@ public class iconLoader
 			try
 			{
 				generictype= mimetype.split("/")[0];
-				Log.d("generictype=", generictype);
 			}
 			catch(Exception e)
 			{
 				generictype=null;
 			}
-			Log.d(mimetype, imgregexp);
 			if(mimetype != null && mimetype.matches(imgregexp))
 			{
 				BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
 				previewoptions.inSampleSize=getScaleratio(previewoptions);
 				previewoptions.inJustDecodeBounds=false;
+				previewoptions.outMimeType="image/jpeg";
 				icon=BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
 			}
 			else if(mimetype != null && icons.containsKey(mimetype))
@@ -167,16 +164,9 @@ public class iconLoader
 		{
 		mholder=holder;
 		mposition=position;
-		iv=new WeakReference<ImageView>(holder.fileicon);
 		current=holder.associatedfile;
-		Log.d("fff", "wtf");
 		cn = mcontext;
-		}
-
-	    
-	    
-
-
+		}	    
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -189,9 +179,7 @@ public class iconLoader
 	    protected void onPostExecute(Void param) {
 			if(mholder.position==mposition)
 			{
-			if(icon!=null)
-			{
-	    	ImageView iconview = iv.get();
+	    	ImageView iconview = mholder.fileicon;
 	    	if(iconview!= null)
 	    	{
 	    	iconview.setImageBitmap(icon);
@@ -201,6 +189,9 @@ public class iconLoader
 	    	}
 			}
 			}
+			else
+			{
+				mholder.rootview.invalidate();
 			}
 	    }
 	}

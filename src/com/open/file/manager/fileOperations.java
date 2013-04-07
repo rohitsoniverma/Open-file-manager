@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -63,7 +62,6 @@ public class fileOperations
 	protected void askconflicts(final ArrayList<fileDuplicate> duplicates,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
 		AlertDialog.Builder builder;
-		Log.d(Integer.toString(conflicts.size()), Integer.toString(current));
 		if(conflicts.size()<=current && duplicates.equals(conflicts))
 		{
 			Message dupmsg=Message.obtain();
@@ -157,7 +155,6 @@ public class fileOperations
 	
 	public void startcutcopyservice(String targetfolder)
 	{
-		Log.d("should be", "here");
 		List<String> cutcopylist=new ArrayList<String>();
 		Intent cutcopyintent=new Intent(act, cutcopyservice.class);
 		cutcopyintent.putExtra("action", currentaction);
@@ -173,8 +170,6 @@ public class fileOperations
 	
 	public void performremove()
 	{
-		Log.d("performing", "remove");
-		Log.d("queue size=", Integer.toString(operationqueue.size()));
 		for (int i=0; i<operationqueue.size(); i++)
  	   	{
  		   File current= operationqueue.get(i);
@@ -230,7 +225,6 @@ public class fileOperations
             	   }
             	   else
             	   {
-            		   Log.d("before perform", "remove");
             		   performremove();
             	   }
                }

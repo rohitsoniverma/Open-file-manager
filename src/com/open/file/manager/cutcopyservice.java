@@ -32,7 +32,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class cutcopyservice extends IntentService {
@@ -74,7 +73,6 @@ public class cutcopyservice extends IntentService {
 					cutcopynotification.contentView.setTextViewText(R.id.progresstext, waitingdup);
 					cutcopymanager.notify(id, cutcopynotification);
 					Looper.loop();
-					Log.d("msg", "received");
 				}
 				performoperation(tree.children.get(i));
 				i++;
@@ -103,8 +101,6 @@ public class cutcopyservice extends IntentService {
 
 	private boolean notenoughspace(FileCopyNode current) {
 		StatFs targetfs=new StatFs(current.dstFile.getParent());
-		Log.d("partition space", Long.toString((long)targetfs.getAvailableBlocks()*(long)targetfs.getBlockSize()));
-		Log.d("total bytes", Long.toString(totalbytes));
 		return current.size > (long)targetfs.getAvailableBlocks()*(long)targetfs.getBlockSize();
 	}
 
@@ -132,7 +128,6 @@ public class cutcopyservice extends IntentService {
 			progresspercent = (int) ((100 * progressbytes) / totalbytes);
 			cutcopynotification.contentView.setProgressBar(R.id.progressBar, 100,
 					progresspercent, false);
-			Log.d("percentage", Integer.toString(progresspercent));
 			progressstring = fileOperations.gethumansize(progressbytes) + "/"
 					+ fileOperations.gethumansize(totalbytes);
 			cutcopynotification.contentView.setTextViewText(R.id.textprogress,
@@ -256,15 +251,12 @@ public class cutcopyservice extends IntentService {
 		tree = new FileCopyTree(filelist, targetfolder);
 
 		if (tree.duplicates.size() != 0) {
-			Log.d(tree.duplicates.toString(),
-					Integer.toString(tree.duplicates.size()));
 			Message dupmsg = Message.obtain();
 			Bundle dupdata = new Bundle();
 			dupdata.putParcelableArrayList("duplicates", tree.duplicates);
 			dupmsg.setData(dupdata);
 			MainActivity.dupHandler.sendMessage(dupmsg);
 		}
-		Log.d("wtf", Integer.toString(tree.duplicates.size()));
 		id = 1;
 		cutcopymanager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		cutcopybuilder = new NotificationCompat.Builder(this);
@@ -294,7 +286,6 @@ public class cutcopyservice extends IntentService {
 	{
 		@Override
 		public void handleMessage(Message msg) {
-			Log.d("duplicate", "found");
 			duplicates = msg.getData().getParcelableArrayList("duplicates");
 			tree.duplicates=duplicates;
 			updateduplicates(duplicates, tree.children);

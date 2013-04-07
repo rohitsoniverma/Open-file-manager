@@ -18,7 +18,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +94,6 @@ public class Gridfragment extends SherlockFragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("inflater null?", Boolean.toString(inflater==null));
 		v = inflater.inflate(R.layout.activity_viewfiles, container, false);
 		grid=(GridView) v.findViewById(R.id.listfilesgrid);
 		myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
@@ -168,7 +166,6 @@ public class Gridfragment extends SherlockFragment
 	public File GetParent()
 	{
 		File parent = currentdir.getParentFile();
-		Log.d("curfile", currentdir.getAbsolutePath());
 		return parent;
 	}
 
