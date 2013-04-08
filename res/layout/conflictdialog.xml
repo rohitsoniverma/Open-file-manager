@@ -18,7 +18,7 @@
 
 <LinearLayout
     android:id="@+id/files"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
@@ -27,15 +27,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/black"
             android:textIsSelectable="false" />
 
 
         <TextView
             android:id="@+id/dstdescr"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/black"
             android:textIsSelectable="false" />
         </LinearLayout>

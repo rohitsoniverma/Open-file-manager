@@ -32,7 +32,7 @@ public class ImageAdapter extends BaseAdapter {
     private int nfrag;
     private static final filecomparator compare= new filecomparator();
     private static LruCache<String, Bitmap> bitmapCache;
-    private static iconLoader loader;
+    private iconLoader loader;
 
     public ImageAdapter(Context c, File curdir) {
         mContext = c;

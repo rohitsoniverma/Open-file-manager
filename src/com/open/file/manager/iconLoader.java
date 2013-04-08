@@ -17,6 +17,7 @@ import java.util.Hashtable;
 
 import com.open.file.manager.ImageAdapter.Gridviewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,12 +27,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
 public class iconLoader
 {
-	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/4);;
+	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/6);;
 	private static final LruCache<String,Bitmap> bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
 
         @Override
@@ -41,7 +43,7 @@ public class iconLoader
     };;;
 	private static Context mycont;
     private final Bitmap genericicon;
-	static final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
+	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
 
 	
 	public iconLoader(Context ct)
@@ -103,6 +105,10 @@ public class iconLoader
 				previewoptions.inSampleSize=getScaleratio(previewoptions);
 				previewoptions.inJustDecodeBounds=false;
 				icon=BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
+				if(icon==null)
+				{
+					icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get("image"));
+				}
 			}
 			else if(mimetype != null && icons.containsKey(mimetype))
 			{
@@ -158,7 +164,7 @@ public class iconLoader
 		mholder=holder;
 		mposition=position;
 		current=holder.associatedfile;
-		}	    
+		}
 
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -168,10 +174,11 @@ public class iconLoader
 		
 		@Override
 	    protected void onPostExecute(Void param) {
-			if(mholder.position==mposition)
+			if(mholder.position==mposition && icon!=null)
 			{
 	    	ImageView iconview = mholder.fileicon;
 	    	iconview.setImageBitmap(icon);
+	    	Log.d(current.getAbsolutePath(), Boolean.toString(icon==null));
 	    	if(bitmapCache.get(current.getAbsolutePath())==null)
 	    	{
 	    		bitmapCache.put(current.getAbsolutePath(), icon);

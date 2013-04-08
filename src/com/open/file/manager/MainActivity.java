@@ -173,9 +173,9 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	}
 	
 	@Override
-	protected void onPause()
+	protected void onStop()
 	{
-		super.onPause();
+		super.onStop();
 		if(fileOperations.currentdialog!=null && fileOperations.currentdialog.isShowing())
 		{
 			fileOperations.currentdialog.dismiss();
