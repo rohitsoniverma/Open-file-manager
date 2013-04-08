@@ -31,8 +31,14 @@ import android.widget.ImageView;
 
 public class iconLoader
 {
-	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory() / 1024)/6);;
-	private final LruCache<String,Bitmap> bitmapCache;
+	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/4);;
+	private static final LruCache<String,Bitmap> bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
+
+        @Override
+        protected int sizeOf(String key, Bitmap bitmap) {
+            return (bitmap.getRowBytes()*bitmap.getHeight());
+        }
+    };;;
 	private static Context mycont;
     private final Bitmap genericicon;
 	static final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
@@ -42,15 +48,6 @@ public class iconLoader
 	{
 		mycont=ct;
         genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
-		bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
-
-	        @Override
-	        protected int sizeOf(String key, Bitmap bitmap) {
-	            // The cache size will be measured in kilobytes rather than
-	            // number of items.
-	            return (bitmap.getRowBytes()*bitmap.getHeight()) / 1024;
-	        }
-	    };;
 		//PEZZI di codice da risistemare, li ho tagliati da imageadapter... questa è l'hash delle img
 	    icons.put("audio", R.drawable.audiogeneric);
 	    icons.put("application", R.drawable.applicationgeneric);
@@ -86,7 +83,7 @@ public class iconLoader
 	    }
 	    else
 	    {
-	    	String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath());
+	    	String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath()).toLowerCase();
 			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 			String generictype;
 			String imgregexp="image/(jpg|jpeg|png)";
@@ -105,13 +102,11 @@ public class iconLoader
 				BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
 				previewoptions.inSampleSize=getScaleratio(previewoptions);
 				previewoptions.inJustDecodeBounds=false;
-				previewoptions.outMimeType="image/jpeg";
 				icon=BitmapFactory.decodeFile(current.getAbsolutePath(), previewoptions);
 			}
 			else if(mimetype != null && icons.containsKey(mimetype))
 			{
 		        icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
-
 			}
 			else if(generictype !=null && icons.containsKey(generictype))
 			{
@@ -152,9 +147,7 @@ public class iconLoader
 	
 	class asyncimgload extends AsyncTask<Void, Void, Void>
 	{
-		Context cn;
 		Gridviewholder mholder;
-	    private WeakReference<ImageView> iv;
 		Bitmap icon;
 		File current;
 		int mposition;
@@ -165,12 +158,10 @@ public class iconLoader
 		mholder=holder;
 		mposition=position;
 		current=holder.associatedfile;
-		cn = mcontext;
 		}	    
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			//questo è il filtro che usavo sulle immagini...
 		    icon=getIcon(current);
 		    return null;
 		}
@@ -180,18 +171,11 @@ public class iconLoader
 			if(mholder.position==mposition)
 			{
 	    	ImageView iconview = mholder.fileicon;
-	    	if(iconview!= null)
-	    	{
 	    	iconview.setImageBitmap(icon);
 	    	if(bitmapCache.get(current.getAbsolutePath())==null)
 	    	{
 	    		bitmapCache.put(current.getAbsolutePath(), icon);
 	    	}
-			}
-			}
-			else
-			{
-				mholder.rootview.invalidate();
 			}
 	    }
 	}
