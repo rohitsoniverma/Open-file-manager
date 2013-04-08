@@ -12,7 +12,10 @@
 package com.open.file.manager;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
+
+import com.open.file.manager.iconLoader.asyncimgload;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -123,6 +126,7 @@ public class ImageAdapter extends BaseAdapter {
     	View rootview;
     	Integer position;
     	File associatedfile;
+    	asyncimgload loader;
     }
     
     

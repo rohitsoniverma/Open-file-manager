@@ -36,56 +36,73 @@ public class iconLoader
 	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/6);;
 	private static final LruCache<String,Bitmap> bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
 
-        @Override
-        protected int sizeOf(String key, Bitmap bitmap) {
-            return (bitmap.getRowBytes()*bitmap.getHeight());
-        }
-    };;;
+		@Override
+		protected int sizeOf(String key, Bitmap bitmap) {
+			return (bitmap.getRowBytes()*bitmap.getHeight());
+		}
+	};;;
 	private static Context mycont;
-    private final Bitmap genericicon;
+	private final Bitmap genericicon;
 	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
 
-	
+
 	public iconLoader(Context ct)
 	{
 		mycont=ct;
-        genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
+		genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
 		//PEZZI di codice da risistemare, li ho tagliati da imageadapter... questa è l'hash delle img
-	    icons.put("audio", R.drawable.audiogeneric);
-	    icons.put("application", R.drawable.applicationgeneric);
-	    icons.put("video", R.drawable.videogeneric);
-	    icons.put("text", R.drawable.textgeneric);
-	    icons.put("directory", R.drawable.directory);
-	    //icons.put("application/vnd.android.package-archive", R.drawable.apk);
-	    icons.put("image", R.drawable.imagegeneric);
-		
+		icons.put("audio", R.drawable.audiogeneric);
+		icons.put("application", R.drawable.applicationgeneric);
+		icons.put("video", R.drawable.videogeneric);
+		icons.put("text", R.drawable.textgeneric);
+		icons.put("directory", R.drawable.directory);
+		//icons.put("application/vnd.android.package-archive", R.drawable.apk);
+		icons.put("image", R.drawable.imagegeneric);
+
 	}
-	
+
+	private boolean cancelPotentialWork(Gridviewholder holder)
+	{
+		if(holder.loader!=null)
+		{
+			if(!holder.associatedfile.equals(holder.loader.current))
+			{
+				holder.loader.cancel(true);
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
+
 	public void loadIcon(Gridviewholder holder, int position)
 	{
 		ImageView iv=holder.fileicon;
 		String key=holder.associatedfile.getAbsolutePath();
 		if(bitmapCache.get(key)==null)
 		{
-			iv.setImageBitmap(genericicon);
-			new asyncimgload(mycont, holder, position).execute();
+			if(cancelPotentialWork(holder))
+			{
+				holder.loader=new asyncimgload(mycont, holder, position);
+				holder.loader.execute();
+			}
 		}
 		else
 		{
 			iv.setImageBitmap(bitmapCache.get(key));
 		}
 	}
-	
+
 	public Bitmap getIcon(File current)
 	{
 		Bitmap icon;
 		if(current.isDirectory()==true)
-	    {   
-	        icon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.directory);
-	    }
-	    else
-	    {
-	    	String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath()).toLowerCase();
+		{   
+			icon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.directory);
+		}
+		else
+		{
+			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath()).toLowerCase();
 			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 			String generictype;
 			String imgregexp="image/(jpg|jpeg|png)";
@@ -112,20 +129,20 @@ public class iconLoader
 			}
 			else if(mimetype != null && icons.containsKey(mimetype))
 			{
-		        icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
+				icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
 			}
 			else if(generictype !=null && icons.containsKey(generictype))
 			{
-		        icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(generictype));
+				icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(generictype));
 			}
 			else
 			{
-		        icon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);;
+				icon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);;
 			}
-	    }
+		}
 		return icon;
 	}
-	
+
 	private static int getScaleratio(Options bounds) {
 		final float scale = mycont.getResources().getDisplayMetrics().density;
 		final int targetHeight= Math.round(32*scale);
@@ -135,7 +152,7 @@ public class iconLoader
 		{
 			final int heightRatio=Math.round(bounds.outHeight/targetHeight);
 			final int widthRatio=Math.round(bounds.outWidth/targetWidth);
-			
+
 			scaleratio= heightRatio>widthRatio? heightRatio : widthRatio;
 		}
 		return scaleratio;
@@ -150,42 +167,42 @@ public class iconLoader
 		icodraw.setBounds(new Rect(0, 0, iconbm.getWidth(), iconbm.getHeight()));
 		return icodraw;
 	}
-	
+
 	class asyncimgload extends AsyncTask<Void, Void, Void>
 	{
 		Gridviewholder mholder;
 		Bitmap icon;
 		File current;
 		int mposition;
-		
-		
+
+
 		public asyncimgload(Context mcontext, Gridviewholder holder, int position)
 		{
-		mholder=holder;
-		mposition=position;
-		current=holder.associatedfile;
+			mholder=holder;
+			mposition=position;
+			current=holder.associatedfile;
 		}
 
 		@Override
 		protected Void doInBackground(Void... params) {
-		    icon=getIcon(current);
-		    return null;
+			icon=getIcon(current);
+			return null;
 		}
-		
+
 		@Override
-	    protected void onPostExecute(Void param) {
+		protected void onPostExecute(Void param) {
 			if(mholder.position==mposition && icon!=null)
 			{
-	    	ImageView iconview = mholder.fileicon;
-	    	iconview.setImageBitmap(icon);
-	    	Log.d(current.getAbsolutePath(), Boolean.toString(icon==null));
-	    	if(bitmapCache.get(current.getAbsolutePath())==null)
-	    	{
-	    		bitmapCache.put(current.getAbsolutePath(), icon);
-	    	}
+				ImageView iconview = mholder.fileicon;
+				iconview.setImageBitmap(icon);
+				Log.d(current.getAbsolutePath(), Boolean.toString(icon==null));
+				if(bitmapCache.get(current.getAbsolutePath())==null)
+				{
+					bitmapCache.put(current.getAbsolutePath(), icon);
+				}
 			}
-	    }
+		}
 	}
-	
-	
+
+
 }
