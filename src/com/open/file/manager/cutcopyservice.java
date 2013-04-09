@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class cutcopyservice extends IntentService {
@@ -42,12 +44,12 @@ public class cutcopyservice extends IntentService {
 	private int currentaction;
 	private File targetfolder;
 	private ArrayList<String> filelist;
-	private static Notification cutcopynotification;
-	public static NotificationManager cutcopymanager;
+	private Notification cutcopynotification;
+	public NotificationManager cutcopymanager;
 	private NotificationCompat.Builder cutcopybuilder;
 	private RemoteViews progressview;
-	private static FileCopyTree tree;
-	private static ArrayList<fileDuplicate> duplicates;
+	private FileCopyTree tree;
+	private ArrayList<fileDuplicate> duplicates;
 	private static int id;
 	private long progressbytes = 0;
 	private int progresspercent = 0;
@@ -63,7 +65,7 @@ public class cutcopyservice extends IntentService {
 		int i = 0;
 		FileCopyNode current;
 		totalbytes = tree.size;
-		mHandler = new dupresponcehandler();
+		mHandler = new dupresponcehandler(this);
 
 		while (i < tree.children.size()) {
 			try {
@@ -74,6 +76,7 @@ public class cutcopyservice extends IntentService {
 					cutcopymanager.notify(id, cutcopynotification);
 					Looper.loop();
 				}
+				Log.d("past", "duplicates");
 				performoperation(tree.children.get(i));
 				i++;
 			} catch (Exception e) {
@@ -136,9 +139,10 @@ public class cutcopyservice extends IntentService {
 		}
 	}
 
-	protected static void updateduplicates(ArrayList<fileDuplicate> newduplic,
+	 void updateduplicates(ArrayList<fileDuplicate> newduplic,
 			List<FileCopyNode> files) {
 		fileDuplicate currentdup;
+		Log.d("newduplic size", Integer.toString(newduplic.size()));
 		int i, j = 0;
 		for (i = 0; i < files.size(); i++) {
 			FileCopyNode currentfile = files.get(i);
@@ -153,7 +157,7 @@ public class cutcopyservice extends IntentService {
 			if (currentfile.duplicate != null) {
 				currentfile.duplicate = currentdup;
 				j++;
-				if (currentfile.children.size() > 0 && currentdup.childDuplicates.size()>0) {
+				if (currentfile.children.size() > 0 && currentdup.childDuplicates!=null) {
 					updateduplicates(currentdup.childDuplicates,
 							currentfile.children);
 				}
@@ -165,6 +169,7 @@ public class cutcopyservice extends IntentService {
 	private void performoperation(FileCopyNode filenode) throws IOException {
 		if (filenode.duplicate != null) {
 			if (!filenode.duplicate.overwrite) {
+				Log.d("skipping", "filezz");
 				totalbytes -= filenode.size;
 				updateprogress();
 				return;
@@ -284,14 +289,31 @@ public class cutcopyservice extends IntentService {
 
 	static class dupresponcehandler extends Handler
 	{
+		WeakReference<cutcopyservice> mservice;
+		
+		dupresponcehandler(cutcopyservice service)
+		{
+			mservice=new WeakReference<cutcopyservice>(service);
+		}
+		
 		@Override
 		public void handleMessage(Message msg) {
-			duplicates = msg.getData().getParcelableArrayList("duplicates");
-			tree.duplicates=duplicates;
-			updateduplicates(duplicates, tree.children);
-			cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
-			cutcopymanager.notify(id, cutcopynotification);
+			
+			if(mservice!=null && mservice.get()!=null)
+			{
+			cutcopyservice currentservice=mservice.get();
+			currentservice.duplicates=msg.getData().getParcelableArrayList("duplicates");
+			if(currentservice.duplicates.isEmpty())
+			{
+				Log.d("wtf", "empty");
+			}
+			currentservice.tree.duplicates=currentservice.duplicates;
+			currentservice.updateduplicates(currentservice.duplicates, currentservice.tree.children);
+			currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
+			currentservice.cutcopymanager.notify(id, currentservice.cutcopynotification);
+			}
 			Looper.myLooper().quit();
+			
 		}
 	}
 }

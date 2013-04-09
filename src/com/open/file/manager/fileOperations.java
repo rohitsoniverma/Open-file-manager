@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -62,16 +63,24 @@ public class fileOperations
 	protected void askconflicts(final ArrayList<fileDuplicate> duplicates,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
 		AlertDialog.Builder builder;
-		if(conflicts.size()<=current && duplicates.equals(conflicts))
+		if(duplicates.size()==current)
 		{
+			if(duplicates.equals(conflicts))
+			{
 			Message dupmsg=Message.obtain();
 			Bundle dupdata= new Bundle();
-			dupdata.putParcelableArrayList("duplicates", duplicates);
+			dupdata.putParcelableArrayList("duplicates", conflicts);
 			dupmsg.setData(dupdata);
-			conflicts.clear();
 			if(isMyServiceRunning() && cutcopyservice.mHandler!=null)
 			{
-			cutcopyservice.mHandler.sendMessage(dupmsg);
+			if(!cutcopyservice.mHandler.sendMessage(dupmsg))
+			{
+				Log.d("not", "sent");
+			}
+			Log.d("conflictsize", Integer.toString(conflicts.size()));
+			Log.d("message", "sent");
+			conflicts.clear();
+			}
 			}
 			return;
 		}
@@ -128,11 +137,12 @@ public class fileOperations
             		CheckBox overwrite= (CheckBox)((AlertDialog) dialog).findViewById(R.id.overwritecheck);
 	            	if(conflict.src.isDirectory())
 	            	{
+	            		Log.d("conflict", "is dir");
 	            		if(conflict.childDuplicates.size()>0)
 	            		{
 	            		askconflicts(conflict.childDuplicates, overwritefiles, overwrite.isChecked(), 0);
 	            		}
-	            		askconflicts(conflict.childDuplicates, overwritefiles, overwrite.isChecked(), current+1);
+	            		askconflicts(duplicates, overwritefiles, overwrite.isChecked(), current+1);
 	            	}
 	            	else
 	            	{

@@ -18,6 +18,7 @@ import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class FileCopyTree
 {
@@ -185,9 +186,11 @@ class fileDuplicate implements Parcelable
 		src=new File(in.readString());
 		dst=new File(in.readString());
 		overwrite=(in.readInt()==1);
+		Log.d("overwrite", Boolean.toString(overwrite));
 		processed=(in.readInt()==1);
 		type=in.readInt();
 		in.readTypedList(childDuplicates, fileDuplicate.CREATOR);
+		getConfilctType();
 	}
 
 	@Override
