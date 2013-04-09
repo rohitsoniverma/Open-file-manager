@@ -41,6 +41,7 @@ public class fileOperations
 	public static AlertDialog currentdialog;
 	public static List<String> cutcopyqueue;
 	public static ArrayList<fileDuplicate> conflicts;
+	List<Integer> duptreepath=new ArrayList<Integer>();
 
 	
 	public fileOperations(Context appcont, MainActivity myact)
@@ -65,8 +66,9 @@ public class fileOperations
 		AlertDialog.Builder builder;
 		if(duplicates.size()==current)
 		{
-			if(duplicates.equals(conflicts))
+			if(duplicates.get(0).src.getAbsolutePath()==conflicts.get(0).src.getAbsolutePath())
 			{
+			Log.d("i am", "here");
 			Message dupmsg=Message.obtain();
 			Bundle dupdata= new Bundle();
 			dupdata.putParcelableArrayList("duplicates", conflicts);
@@ -82,6 +84,18 @@ public class fileOperations
 			conflicts.clear();
 			}
 			}
+			else
+			{
+				int oldindex;
+				ArrayList<fileDuplicate> restoredup = conflicts;
+				for(int i=0; i<duptreepath.size()-1; i++)
+				{
+					oldindex=duptreepath.get(i);
+					restoredup=restoredup.get(oldindex).childDuplicates;
+				}
+				oldindex=duptreepath.remove(duptreepath.size()-1)+1;
+				askconflicts(restoredup, overwritefiles, overwritefolders, oldindex);
+			}
 			return;
 		}
 		final fileDuplicate conflict= duplicates.get(current);
@@ -89,20 +103,29 @@ public class fileOperations
 		{
 			if(conflict.childDuplicates.size()>0)
 			{
+				duptreepath.add(current);
 				askconflicts(conflict.childDuplicates, overwritefiles, overwritefolders, 0);
 			}
+			else
+			{
 			askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
+			}
 		}
 		if(conflict.type==1)
 		{
 			if(overwritefolders)
 			{
 				conflict.overwrite=true;
+            	conflict.processed=true;
 				if(conflict.childDuplicates.size()>0)
 				{
+					duptreepath.add(current);
 					askconflicts(conflict.childDuplicates, overwritefiles, overwritefolders, 0);
 				}
+				else
+				{
 				askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
+				}
 				return;
 			}
 		}
@@ -111,6 +134,7 @@ public class fileOperations
 			if(overwritefiles)
 			{
 				conflict.overwrite=true;
+            	conflict.processed=true;
 				askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 				return;
 			}
@@ -123,6 +147,7 @@ public class fileOperations
 	            public void onClick(DialogInterface dialog, int id) {
 	            	Editable newname=((EditText)((AlertDialog) dialog).findViewById(R.id.newfilename)).getText();
 	            	conflict.overwrite=true;
+	            	conflict.processed=true;
 	            	conflict.newname=newname.toString();
 	            	askconflicts(duplicates, overwritefiles, overwritefolders, current+1);
 	            }
@@ -134,15 +159,19 @@ public class fileOperations
 	            @Override
 	            public void onClick(DialogInterface dialog, int id) {
 	            	conflict.overwrite=true;
+	            	conflict.processed=true;
             		CheckBox overwrite= (CheckBox)((AlertDialog) dialog).findViewById(R.id.overwritecheck);
 	            	if(conflict.src.isDirectory())
 	            	{
-	            		Log.d("conflict", "is dir");
 	            		if(conflict.childDuplicates.size()>0)
 	            		{
-	            		askconflicts(conflict.childDuplicates, overwritefiles, overwrite.isChecked(), 0);
+	        				duptreepath.add(current);
+	        				askconflicts(conflict.childDuplicates, overwritefiles, overwrite.isChecked(), 0);
 	            		}
+	            		else
+	            		{
 	            		askconflicts(duplicates, overwritefiles, overwrite.isChecked(), current+1);
+	            		}
 	            	}
 	            	else
 	            	{

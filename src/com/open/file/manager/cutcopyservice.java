@@ -123,7 +123,7 @@ public class cutcopyservice extends IntentService {
 			finishbuilder.setContentIntent(contentIntent);
 			cutcopymanager.notify(id+1, finishbuilder.build());
 			stopForeground(true);
-			super.onDestroy();
+			this.stopSelf();
 			return;
 		}
 		if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
