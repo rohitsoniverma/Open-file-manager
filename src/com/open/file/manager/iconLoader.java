@@ -47,7 +47,7 @@ public class iconLoader
 	};;;
 	private static Context mycont;
 	private final Bitmap genericicon;
-	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(13);
+	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(14);
 
 
 	public iconLoader(Context ct)
@@ -68,6 +68,7 @@ public class iconLoader
 		icons.put("application/x-gzip", R.drawable.archive);
 		icons.put("application/msword", R.drawable.msword);
 		icons.put("text/html", R.drawable.html);
+		icons.put("application/vnd.oasis.opendocument.text", R.drawable.msword);
 
 	}
 
@@ -94,7 +95,14 @@ public class iconLoader
 			if(cancelPotentialWork(holder))
 			{
 				holder.loader=new asyncimgload(mycont, holder, position);
+				if(android.os.Build.VERSION.SDK_INT>=11)
+				{
+					holder.loader.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				else
+				{
 				holder.loader.execute();
+				}
 			}
 		}
 		else
