@@ -57,7 +57,6 @@ public class Gridfragment extends SherlockFragment
 	static Gridfragment newInstance(File initpath) {
 		Gridfragment f = new Gridfragment();
 		f.currentdir=initpath;
-		f.setRetainInstance(false);
 		return f;
 	}
 
@@ -77,27 +76,25 @@ public class Gridfragment extends SherlockFragment
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setRetainInstance(true);
 		firstrun=true;
-		if(currentdir==null)
-		{
-			String path=savedInstanceState.getString("currentdir");
-			currentdir=new File(path);
-		}
-	}
-
-	@Override
-	public void onSaveInstanceState (Bundle outState)
-	{
-		super.onSaveInstanceState(outState);
-		outState.putString("currentdir", currentdir.getAbsolutePath());
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
 		v = inflater.inflate(R.layout.activity_viewfiles, container, false);
 		grid=(GridView) v.findViewById(R.id.listfilesgrid);
+		return v;
+	}
+	
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		if(currentdir==null)
+		{
+			currentdir=new File(savedInstanceState.getString("currentdir"));
+		}
 		myimgad=new ImageAdapter(MainActivity.actcontext, currentdir);
 		grid.setAdapter(myimgad);
 		myimgad.notifyDataSetChanged();
@@ -155,9 +152,15 @@ public class Gridfragment extends SherlockFragment
 				return true;
 			}
 		});
-		return v;
 	}
 
+	@Override
+	public void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putString("currentdir", currentdir.getAbsolutePath());
+	}
+	
 	public void ChangePath(File newroot)
 	{
 		currentdir=newroot;

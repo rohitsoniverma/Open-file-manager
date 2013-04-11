@@ -59,7 +59,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	public static List<File> selectedfiles= new ArrayList<File>();
 	public static List<String> cutcopylist= new ArrayList<String>();
 	public static Fragmentadapter mAdapter=null;
-	public static List<SherlockFragment> fragments = new ArrayList<SherlockFragment>();
 	public static ActionMode mMode;
 	public static ActionMode copycutmode;
 	public static ViewPager mPager;
@@ -72,25 +71,21 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		super.onCreate(savedInstanceState);
 		int i=0;
 		actcontext = getApplicationContext();
-		if(savedInstanceState != null)
-		{
-		ArrayList<String> fragmentpaths=savedInstanceState.getStringArrayList("fragments");
-		if(fragmentpaths !=null)
-		{
-			fragments.clear();
-		for(i=0; i<fragmentpaths.size(); i++)
-		{
-			File root=new File(fragmentpaths.get(i));
-			fragments.add(Gridfragment.newInstance(root));
-		}
-		}
-		}
+		
 
 		operator= new fileOperations(actcontext, this);
 		/*imposto l'adapter per i fragment*/
 		setContentView(R.layout.fragment_pager_layout);
 		mPager = (ViewPager)findViewById(R.id.pager);
-			mAdapter=new Fragmentadapter(getSupportFragmentManager(), fragments, this);
+		mAdapter=new Fragmentadapter(getSupportFragmentManager(), this);
+		if(savedInstanceState!=null)
+		{
+			ArrayList<String> oldfrags=savedInstanceState.getStringArrayList("fragments");
+			for(int j=0; j<oldfrags.size(); j++)
+			{
+				mAdapter.addFragment(Gridfragment.newInstance(oldfrags.get(j)));
+			}
+		}
 			mPager.setAdapter(mAdapter);
 			if(mAdapter.selectpathmissing())
 			{
@@ -119,7 +114,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 
 	public void changeFragmentPath(int fragnum, File newroot)
 	{
-		Gridfragment currentfr = (Gridfragment) fragments.get(fragnum);
+		Gridfragment currentfr = (Gridfragment) mAdapter.getItem(fragnum);
 		currentfr.ChangePath(newroot);
 	}
 	
@@ -127,7 +122,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	
 	@Override
 	public void onPathSelected(File clicked) {
-		int fragnum=fragments.size() - 1;
+		int fragnum=mAdapter.getCount()-1;
 		Gridfragment newfrag=Gridfragment.newInstance(clicked);
 		mAdapter.addFragment(Selectpathfragment.newInstance());
 		mAdapter.replaceFragment(newfrag, fragnum);
@@ -186,8 +181,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	protected void onSaveInstanceState (Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
-		ArrayList<String> gridfragments= mAdapter.getfragments();
-		outState.putStringArrayList("fragments", gridfragments);
+		ArrayList<String> oldfrags=mAdapter.getFragments();
+		outState.putStringArrayList("fragments", oldfrags);
 		if(fileOperations.conflicts!= null && fileOperations.conflicts.size()>0)
 		{
 		outState.putParcelableArrayList("conflicts", fileOperations.conflicts);
@@ -269,9 +264,9 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			copycutmode=null;
 			return;
 		}
-		if(fragments.get(fragnum) instanceof Gridfragment)
+		if(mAdapter.getItem(fragnum) instanceof Gridfragment)
 		{
-			Gridfragment current = (Gridfragment) fragments.get(fragnum);
+			Gridfragment current = (Gridfragment) mAdapter.getItem(fragnum);
 			nextroot = current.GetParent();
 			if(nextroot != null)
 			{
@@ -311,12 +306,12 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	public void refreshcurrentgrid()
 	{
 		int fragnum= mPager.getCurrentItem();
-		((Gridfragment) fragments.get(fragnum)).refreshFiles();
+		((Gridfragment) mAdapter.getItem(fragnum)).refreshFiles();
 	}
 	
 	
 	private String getcurrentpath() {
-		return ((Gridfragment) fragments.get(mAdapter.getcurrentfrag())).getCurrentDir().getAbsolutePath();
+		return ((Gridfragment) mAdapter.getItem(mAdapter.getcurrentfrag())).getCurrentDir().getAbsolutePath();
 	}
 	
 	

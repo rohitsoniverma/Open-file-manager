@@ -11,9 +11,13 @@
  ******************************************************************************/
 package com.open.file.manager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
@@ -22,15 +26,15 @@ import com.actionbarsherlock.app.SherlockFragment;
 
 public class Fragmentadapter extends FragmentStatePagerAdapter{
 	// fragments to instantiate in the viewpager
-	   private List<SherlockFragment> fragments;
+	   private static List<SherlockFragment> fragments;
 	   private static int currentfrag = 0;
-	   private MainActivity mact;
+	   private WeakReference<MainActivity> mact;
 	   
 	   // constructor
-	   public Fragmentadapter(FragmentManager fm,List<SherlockFragment> fragments2, MainActivity act) {
+	   public Fragmentadapter(FragmentManager fm, MainActivity act) {
 	      super(fm);
-	      fragments = fragments2;
-	      mact=act;
+	      mact=new WeakReference(act);
+	      fragments=new ArrayList<SherlockFragment>();
 	   }
 	   
 	   public void addFragment(SherlockFragment newFragment)
@@ -59,7 +63,7 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 	   // number of fragments in list, required override
 	   @Override
 	   public int getCount() {
-	      return this.fragments.size();
+	      return fragments.size();
 	   }
 
 	public void replaceFragment(SherlockFragment newFragment, int pos) {
@@ -68,9 +72,9 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		/*myfm.beginTransaction().remove(oldfrag).commit();
 		myfm.beginTransaction().add(newFragment, null).commit();
 		myfm.executePendingTransactions();*/
-}
-
-
+	}
+	
+	
 	@Override
 	public void setPrimaryItem (ViewGroup container, int position, Object object)
 	{
@@ -88,11 +92,14 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 			if(getItem(position) instanceof Gridfragment)
 			{
 				Gridfragment current=(Gridfragment) getItem(position);
-				mact.setTitle(current.currentdir.getName());
+				mact.get().setTitle(current.currentdir.getName());
 			}
 			else
 			{
-				mact.setTitle("Open File Manager");
+				if(mact!=null && mact.get()!=null)
+				{
+				mact.get().setTitle("Open File Manager");
+				}
 			}
 			currentfrag=position;
 		}
@@ -103,7 +110,7 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		return currentfrag;
 	}
 
-	public ArrayList<String> getfragments() {
+	public ArrayList<String> getFragments() {
 		ArrayList<String> gridpaths= new ArrayList<String>();
 		Gridfragment current;
 		for(int i=0; i<fragments.size(); i++)
