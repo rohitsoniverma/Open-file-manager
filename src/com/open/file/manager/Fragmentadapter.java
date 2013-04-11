@@ -123,6 +123,17 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		}
 		return gridpaths;
 	}
+	
+	@Override
+	public Parcelable saveState()
+	{
+		return new Bundle();
+	}
+	
+	@Override
+	public void restoreState(Parcelable saved, ClassLoader loader)
+	{
+	}
 
 	public boolean selectpathmissing() {
 		if(fragments.isEmpty()) return true;

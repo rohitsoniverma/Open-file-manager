@@ -47,6 +47,7 @@ public class fileOperations
 	public fileOperations(Context appcont, MainActivity myact)
 	{
 		act=new WeakReference<MainActivity>(myact);
+		currentaction=consts.ACTION_NONE;
 	}
 	
 	
@@ -427,6 +428,7 @@ public class fileOperations
 			handlepaste(operationqueue, currentpath, currentaction);
 			break;
 		case consts.ACTION_DUPLICATES:
+			Log.d("restoring", "duplicates");
 			askconflicts(conflicts, false, false, 0);
 			break;
 		case consts.ACTION_MKDIR:
@@ -438,7 +440,7 @@ public class fileOperations
 		case consts.ACTION_RENAME:
 			renamefile(operationqueue);
 			break;
-		default:
+		case consts.ACTION_NONE:
 			break;
 		}
 			

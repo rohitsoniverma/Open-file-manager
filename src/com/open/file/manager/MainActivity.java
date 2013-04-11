@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -104,28 +105,26 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	private void restoreOperations(Bundle savedInstanceState) {
 		if(savedInstanceState != null)
 		{
+			Log.d("restoring", "operations");
 			if(savedInstanceState.containsKey("conflicts"))
 			{
-			fileOperations.conflicts=savedInstanceState.getParcelableArrayList("conflicts");
+				fileOperations.conflicts=savedInstanceState.getParcelableArrayList("conflicts");
 			}
-			else
+			fileOperations.currentaction=savedInstanceState.getInt("operation");
+			if(savedInstanceState.containsKey("oldqueue"))
 			{
-				fileOperations.currentaction=savedInstanceState.getInt("operation");
-				if(savedInstanceState.containsKey("oldqueue"))
-				{
 				List<String> filequeue=savedInstanceState.getStringArrayList("oldqueue");
 				for(String curfile: filequeue)
 				{
 					fileOperations.operationqueue.add(new File(curfile));
 				}
-				}
-				if(savedInstanceState.containsKey("currentpath"))
-				{
-					fileOperations.currentpath=savedInstanceState.getString("currentpath");
-				}
 			}
-			operator.restoreOp();
+			if(savedInstanceState.containsKey("currentpath"))
+			{
+				fileOperations.currentpath=savedInstanceState.getString("currentpath");
+			}
 		}
+		operator.restoreOp();
 	}
 
 	public void changeFragmentPath(int fragnum, File newroot)
@@ -184,16 +183,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	}
 
 	@Override
-	protected void onStop()
-	{
-		super.onStop();
-		if(fileOperations.currentdialog!=null && fileOperations.currentdialog.isShowing())
-		{
-			fileOperations.currentdialog.dismiss();
-		}
-	}
-
-	@Override
 	protected void onSaveInstanceState (Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
@@ -202,7 +191,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		outState.putInt("operation", fileOperations.currentaction);
 		if(fileOperations.currentpath!=null)
 		{
-		outState.putString("currentpath", fileOperations.currentpath);
+			outState.putString("currentpath", fileOperations.currentpath);
 		}
 		if(fileOperations.conflicts!= null && fileOperations.conflicts.size()>0)
 		{
@@ -555,7 +544,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			{
 				dstsize=fileOperations.gethumansize(src.length());
 			}
-			
+
 			Date dstdate=new Date(dst.lastModified());
 			TextView dstdescr=(TextView) askdialogview.findViewById(R.id.dstdescr);
 			String dstinfo= String.format(format, dst.getName(), dstsize, dateform.format(dstdate));
