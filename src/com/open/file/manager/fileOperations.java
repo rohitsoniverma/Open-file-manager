@@ -70,8 +70,9 @@ public class fileOperations
 			{
 			Log.d("i am", "here");
 			Message dupmsg=Message.obtain();
+			ArrayList<fileDuplicate> tmpduplicates=conflicts;
 			Bundle dupdata= new Bundle();
-			dupdata.putParcelableArrayList("duplicates", conflicts);
+			dupdata.putParcelableArrayList("duplicates", tmpduplicates);
 			dupmsg.setData(dupdata);
 			if(isMyServiceRunning() && cutcopyservice.mHandler!=null)
 			{
@@ -344,7 +345,7 @@ public class fileOperations
 			act.displaysimpledialog(R.string.cantwritedir, R.string.error);
 			return;
 		}
-		if(currentpath==filelist.get(0).getParent())
+		if(currentpath.equals(filelist.get(0).getParent()))
 		{
 			act.displaysimpledialog(R.string.samefolder, R.string.error);
 			return;

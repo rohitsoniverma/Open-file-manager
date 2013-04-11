@@ -142,7 +142,6 @@ public class cutcopyservice extends IntentService {
 	 void updateduplicates(ArrayList<fileDuplicate> newduplic,
 			List<FileCopyNode> files) {
 		fileDuplicate currentdup;
-		Log.d("newduplic size", Integer.toString(newduplic.size()));
 		int i, j = 0;
 		for (i = 0; i < files.size(); i++) {
 			FileCopyNode currentfile = files.get(i);
@@ -303,10 +302,6 @@ public class cutcopyservice extends IntentService {
 			{
 			cutcopyservice currentservice=mservice.get();
 			currentservice.duplicates=msg.getData().getParcelableArrayList("duplicates");
-			if(currentservice.duplicates.isEmpty())
-			{
-				Log.d("wtf", "empty");
-			}
 			currentservice.tree.duplicates=currentservice.duplicates;
 			currentservice.updateduplicates(currentservice.duplicates, currentservice.tree.children);
 			currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
