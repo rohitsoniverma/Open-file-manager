@@ -81,9 +81,9 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		if(savedInstanceState!=null)
 		{
 			ArrayList<String> oldfrags=savedInstanceState.getStringArrayList("fragments");
-			for(int j=0; j<oldfrags.size(); j++)
+			for(String curfrag: oldfrags)
 			{
-				mAdapter.addFragment(Gridfragment.newInstance(oldfrags.get(j)));
+				mAdapter.addFragment(Gridfragment.newInstance(curfrag));
 			}
 		}
 		mPager.setAdapter(mAdapter);
@@ -102,13 +102,29 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	}
 
 	private void restoreOperations(Bundle savedInstanceState) {
-		if(savedInstanceState != null && savedInstanceState.containsKey("conflicts"))
+		if(savedInstanceState != null)
 		{
-			fileOperations.conflicts=savedInstanceState.getParcelableArrayList("conflicts");
-			if(fileOperations.conflicts.size()>0)
+			if(savedInstanceState.containsKey("conflicts"))
 			{
-				operator.askconflicts(fileOperations.conflicts, false,false, 0);
+			fileOperations.conflicts=savedInstanceState.getParcelableArrayList("conflicts");
 			}
+			else
+			{
+				fileOperations.currentaction=savedInstanceState.getInt("operation");
+				if(savedInstanceState.containsKey("oldqueue"))
+				{
+				List<String> filequeue=savedInstanceState.getStringArrayList("oldqueue");
+				for(String curfile: filequeue)
+				{
+					fileOperations.operationqueue.add(new File(curfile));
+				}
+				}
+				if(savedInstanceState.containsKey("currentpath"))
+				{
+					fileOperations.currentpath=savedInstanceState.getString("currentpath");
+				}
+			}
+			operator.restoreOp();
 		}
 	}
 
@@ -183,9 +199,23 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		super.onSaveInstanceState(outState);
 		ArrayList<String> oldfrags=mAdapter.getFragments();
 		outState.putStringArrayList("fragments", oldfrags);
+		outState.putInt("operation", fileOperations.currentaction);
+		if(fileOperations.currentpath!=null)
+		{
+		outState.putString("currentpath", fileOperations.currentpath);
+		}
 		if(fileOperations.conflicts!= null && fileOperations.conflicts.size()>0)
 		{
 			outState.putParcelableArrayList("conflicts", fileOperations.conflicts);
+		}
+		if(!fileOperations.operationqueue.isEmpty())
+		{
+			ArrayList<String> oldoperations=new ArrayList<String>();
+			for(File current:fileOperations.operationqueue)
+			{
+				oldoperations.add(current.getAbsolutePath());
+			}
+			outState.putStringArrayList("oldqueue", oldoperations);
 		}
 	}
 
@@ -448,8 +478,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.newdir:
-			String currentpath=getcurrentpath();
-			operator.createfolder(currentpath, R.string.typedirname);
+			fileOperations.currentpath=getcurrentpath();
+			operator.createfolder(R.string.typedirname);
 			return true;
 		case R.id.about:
 			//show about dialog

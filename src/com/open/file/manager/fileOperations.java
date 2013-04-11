@@ -34,12 +34,11 @@ import android.widget.ListView;
 public class fileOperations
 {
 	//Context context;
-	int currentaction;
+	static int currentaction;
 	static List<File> operationqueue = new ArrayList<File>();
-	String currentpath;
+	static String currentpath;
 	MainActivity act;
 	public static AlertDialog currentdialog;
-	public static List<String> cutcopyqueue;
 	public static ArrayList<fileDuplicate> conflicts;
 	List<Integer> duptreepath=new ArrayList<Integer>();
 
@@ -64,6 +63,7 @@ public class fileOperations
 	protected void askconflicts(final ArrayList<fileDuplicate> duplicates,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
 		AlertDialog.Builder builder;
+		currentaction=consts.ACTION_DUPLICATES;
 		if(duplicates.size()==current)
 		{
 			if(duplicates.equals(conflicts))
@@ -84,6 +84,7 @@ public class fileOperations
 			Log.d("message", "sent");
 			duptreepath.clear();
 			conflicts.clear();
+			currentaction=consts.ACTION_NONE;
 			}
 			}
 			else
@@ -228,6 +229,7 @@ public class fileOperations
  	   }
 		operationqueue.clear();
 		act.refreshcurrentgrid();
+		currentaction=consts.ACTION_NONE;
 	}
 	
 	void DeleteRecursive(File fileOrDirectory) {
@@ -317,6 +319,7 @@ public class fileOperations
 						rename.renameTo(newfile);
 						operationqueue.clear();
 						act.refreshcurrentgrid();
+						currentaction=consts.ACTION_NONE;
 						}
 						else
 						{
@@ -353,10 +356,11 @@ public class fileOperations
 		operationqueue=filelist;
 		startcutcopyservice(path);
 		operationqueue.clear();
+		currentaction=consts.ACTION_NONE;
 	}
 	
 
-	public void createfolder(final String currentpath, final int message) {
+	public void createfolder(final int message) {
 		currentaction=consts.ACTION_MKDIR;
 		operationqueue.add(new File(currentpath));
 		String newfolder=act.getResources().getString(R.string.newfolder);
@@ -370,7 +374,7 @@ public class fileOperations
 				File newdirfile=new File(currentpath, newname.toString());
 				if(newdirfile.exists())
 				{
-					createfolder(currentpath, R.string.newdirexists);
+					createfolder(R.string.newdirexists);
 				}
 				else
 				{
@@ -379,10 +383,12 @@ public class fileOperations
 						newdirfile.mkdir();
 						operationqueue.clear();
 						act.refreshcurrentgrid();
+						currentpath=null;
+						currentaction=consts.ACTION_NONE;
 					}
 					else
 					{
-						createfolder(currentpath, R.string.invalidname);
+						createfolder(R.string.invalidname);
 					}
 				}
 			}
@@ -409,5 +415,32 @@ public class fileOperations
 			unit = "B";
 		}
 		return new String(Long.toString(bytesize / dividefactor) + " " + unit);
+	}
+
+
+	public void restoreOp() {
+		switch(currentaction) {
+		case consts.ACTION_COPY:
+			handlepaste(operationqueue, currentpath, currentaction);
+			break;
+		case consts.ACTION_CUT:
+			handlepaste(operationqueue, currentpath, currentaction);
+			break;
+		case consts.ACTION_DUPLICATES:
+			askconflicts(conflicts, false, false, 0);
+			break;
+		case consts.ACTION_MKDIR:
+			createfolder(R.string.newdir);
+			break;
+		case consts.ACTION_REMOVE:
+			removefiles(operationqueue);
+			break;
+		case consts.ACTION_RENAME:
+			renamefile(operationqueue);
+			break;
+		default:
+			break;
+		}
+			
 	}
 }

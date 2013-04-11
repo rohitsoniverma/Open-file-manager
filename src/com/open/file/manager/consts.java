@@ -9,7 +9,7 @@ public class consts
 	static final int ACTION_RENAME=2;
 	static final int ACTION_REMOVE=3;
 	static final int ACTION_MKDIR=4;
-	static final int ACTION_DUPLICATES=4;
+	static final int ACTION_DUPLICATES=5;
 	
 	//Rename index for actionbar
 	static final int INDEX_RENAME=3;
