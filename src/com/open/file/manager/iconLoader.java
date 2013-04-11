@@ -19,6 +19,9 @@ import com.open.file.manager.ImageAdapter.Gridviewholder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -26,6 +29,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -43,7 +47,7 @@ public class iconLoader
 	};;;
 	private static Context mycont;
 	private final Bitmap genericicon;
-	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(6);
+	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(13);
 
 
 	public iconLoader(Context ct)
@@ -56,8 +60,14 @@ public class iconLoader
 		icons.put("video", R.drawable.videogeneric);
 		icons.put("text", R.drawable.textgeneric);
 		icons.put("directory", R.drawable.directory);
-		//icons.put("application/vnd.android.package-archive", R.drawable.apk);
+		icons.put("application/vnd.android.package-archive", R.drawable.apk);
+		icons.put("application/pdf", R.drawable.pdf);
 		icons.put("image", R.drawable.imagegeneric);
+		icons.put("application/zip", R.drawable.archive);
+		icons.put("application/x-tar", R.drawable.archive);
+		icons.put("application/x-gzip", R.drawable.archive);
+		icons.put("application/msword", R.drawable.msword);
+		icons.put("text/html", R.drawable.html);
 
 	}
 
@@ -125,6 +135,24 @@ public class iconLoader
 				if(icon==null)
 				{
 					icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get("image"));
+				}
+			}
+			else if(mimetype=="application/vnd.android.package-archive")
+			{
+				PackageInfo packageInfo = mycont.getPackageManager().getPackageArchiveInfo(current.getAbsolutePath(), 
+						PackageManager.GET_ACTIVITIES);
+				if(packageInfo != null) {
+					ApplicationInfo appInfo = packageInfo.applicationInfo;
+					if (Build.VERSION.SDK_INT >= 8) {
+						appInfo.sourceDir = current.getAbsolutePath();
+						appInfo.publicSourceDir = current.getAbsolutePath();
+					}
+					Drawable apkico = appInfo.loadIcon(mycont.getPackageManager());
+					icon = ((BitmapDrawable) apkico).getBitmap();
+				}
+				else
+				{
+					icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
 				}
 			}
 			else if(mimetype != null && icons.containsKey(mimetype))

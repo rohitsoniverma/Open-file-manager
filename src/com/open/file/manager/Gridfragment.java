@@ -87,7 +87,7 @@ public class Gridfragment extends SherlockFragment
 		grid=(GridView) v.findViewById(R.id.listfilesgrid);
 		return v;
 	}
-	
+
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -118,6 +118,7 @@ public class Gridfragment extends SherlockFragment
 					else
 					{
 						String fileExtension = MimeTypeMap.getFileExtensionFromUrl(clicked.getAbsolutePath());
+						fileExtension=fileExtension.toLowerCase();
 						String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 						if(clicked.canRead())
 						{
@@ -160,7 +161,7 @@ public class Gridfragment extends SherlockFragment
 		super.onSaveInstanceState(outState);
 		outState.putString("currentdir", currentdir.getAbsolutePath());
 	}
-	
+
 	public void ChangePath(File newroot)
 	{
 		currentdir=newroot;
