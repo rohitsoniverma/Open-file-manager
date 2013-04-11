@@ -66,7 +66,7 @@ public class fileOperations
 		AlertDialog.Builder builder;
 		if(duplicates.size()==current)
 		{
-			if(duplicates.get(0).src.getAbsolutePath()==conflicts.get(0).src.getAbsolutePath())
+			if(duplicates.equals(conflicts))
 			{
 			Log.d("i am", "here");
 			Message dupmsg=Message.obtain();
@@ -81,6 +81,7 @@ public class fileOperations
 			}
 			Log.d("conflictsize", Integer.toString(conflicts.size()));
 			Log.d("message", "sent");
+			duptreepath.clear();
 			conflicts.clear();
 			}
 			}

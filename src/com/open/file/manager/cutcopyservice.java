@@ -154,7 +154,7 @@ public class cutcopyservice extends IntentService {
 			{
 				currentdup=null;
 			}
-			if (currentfile.duplicate != null) {
+			if (currentfile.duplicate != null && currentdup!=null) {
 				currentfile.duplicate = currentdup;
 				j++;
 				if (currentfile.children.size() > 0 && currentdup.childDuplicates!=null) {

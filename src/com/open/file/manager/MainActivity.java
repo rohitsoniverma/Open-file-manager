@@ -505,12 +505,12 @@ public  Callback getcallback() {
 			String format=getResources().getString(R.string.fileinfo);
 			Date srcdate=new Date(src.lastModified());
 			
-			String srcsize=fileOperations.gethumansize(src.length());
+			String srcsize=src.isDirectory()? Integer.toString(0) : fileOperations.gethumansize(src.length());
 			String srcinfo= String.format(format, src.getName(), srcsize, dateform.format(srcdate));
 			srcdescr.setText(srcinfo);
 			srcdescr.setCompoundDrawables(null, loader.loadConflictico(src), null, null);
 			
-			String dstsize=fileOperations.gethumansize(dst.length());
+			String dstsize=dst.isDirectory()? Integer.toString(0) : fileOperations.gethumansize(dst.length());
 			Date dstdate=new Date(dst.lastModified());
 			TextView dstdescr=(TextView) askdialogview.findViewById(R.id.dstdescr);
 			String dstinfo= String.format(format, dst.getName(), dstsize, dateform.format(dstdate));
