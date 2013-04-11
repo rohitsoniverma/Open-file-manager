@@ -44,10 +44,30 @@ public class iconLoader
 		protected int sizeOf(String key, Bitmap bitmap) {
 			return (bitmap.getRowBytes()*bitmap.getHeight());
 		}
+		
 	};;;
 	private static Context mycont;
 	private final Bitmap genericicon;
-	final Hashtable<String, Integer> icons=new Hashtable<String, Integer>(14);
+	final static Hashtable<String, Integer> icons=new Hashtable<String, Integer>(14)
+			{
+				private static final long serialVersionUID = -4906177634872793364L;
+
+			{
+					put("audio", R.drawable.audiogeneric);
+					put("application", R.drawable.applicationgeneric);
+					put("video", R.drawable.videogeneric);
+					put("text", R.drawable.textgeneric);
+					put("directory", R.drawable.directory);
+					put("application/vnd.android.package-archive", R.drawable.apk);
+					put("application/pdf", R.drawable.pdf);
+					put("image", R.drawable.imagegeneric);
+					put("application/zip", R.drawable.archive);
+					put("application/x-tar", R.drawable.archive);
+					put("application/x-gzip", R.drawable.archive);
+					put("application/msword", R.drawable.msword);
+					put("text/html", R.drawable.html);
+					put("application/vnd.oasis.opendocument.text", R.drawable.msword);
+			}};
 
 
 	public iconLoader(Context ct)
@@ -55,21 +75,6 @@ public class iconLoader
 		mycont=ct;
 		genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
 		//PEZZI di codice da risistemare, li ho tagliati da imageadapter... questa è l'hash delle img
-		icons.put("audio", R.drawable.audiogeneric);
-		icons.put("application", R.drawable.applicationgeneric);
-		icons.put("video", R.drawable.videogeneric);
-		icons.put("text", R.drawable.textgeneric);
-		icons.put("directory", R.drawable.directory);
-		icons.put("application/vnd.android.package-archive", R.drawable.apk);
-		icons.put("application/pdf", R.drawable.pdf);
-		icons.put("image", R.drawable.imagegeneric);
-		icons.put("application/zip", R.drawable.archive);
-		icons.put("application/x-tar", R.drawable.archive);
-		icons.put("application/x-gzip", R.drawable.archive);
-		icons.put("application/msword", R.drawable.msword);
-		icons.put("text/html", R.drawable.html);
-		icons.put("application/vnd.oasis.opendocument.text", R.drawable.msword);
-
 	}
 
 	private boolean cancelPotentialWork(Gridviewholder holder)
@@ -86,6 +91,7 @@ public class iconLoader
 		return true;
 	}
 
+	@SuppressLint("NewApi")
 	public void loadIcon(Gridviewholder holder, int position)
 	{
 		ImageView iv=holder.fileicon;
