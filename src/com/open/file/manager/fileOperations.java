@@ -12,6 +12,7 @@
 package com.open.file.manager;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class fileOperations
 	static int currentaction;
 	static List<File> operationqueue = new ArrayList<File>();
 	static String currentpath;
-	MainActivity act;
+	WeakReference<MainActivity> act;
 	public static AlertDialog currentdialog;
 	public static ArrayList<fileDuplicate> conflicts;
 	List<Integer> duptreepath=new ArrayList<Integer>();
@@ -45,13 +46,12 @@ public class fileOperations
 	
 	public fileOperations(Context appcont, MainActivity myact)
 	{
-		//context=appcont;
-		act=myact;
+		act=new WeakReference<MainActivity>(myact);
 	}
 	
 	
 	private boolean isMyServiceRunning() {
-	    ActivityManager manager = (ActivityManager) act.getSystemService(Context.ACTIVITY_SERVICE);
+	    ActivityManager manager = (ActivityManager) act.get().getSystemService(Context.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	        if (cutcopyservice.class.getName().equals(service.service.getClassName())) {
 	            return true;
@@ -142,7 +142,7 @@ public class fileOperations
 				return;
 			}
 		}
-		builder = act.showConflictdialog(conflict);
+		builder = act.get().showConflictdialog(conflict);
 		if(conflict.type==2)
 		{
 			builder.setPositiveButton(R.id.rename, new DialogInterface.OnClickListener() {
@@ -198,7 +198,7 @@ public class fileOperations
 	public void startcutcopyservice(String targetfolder)
 	{
 		List<String> cutcopylist=new ArrayList<String>();
-		Intent cutcopyintent=new Intent(act, cutcopyservice.class);
+		Intent cutcopyintent=new Intent(act.get(), cutcopyservice.class);
 		cutcopyintent.putExtra("action", currentaction);
 		for(int i=0; i<operationqueue.size(); i++)
 		{
@@ -206,7 +206,7 @@ public class fileOperations
 		}
 		cutcopyintent.putStringArrayListExtra("filelist", (ArrayList<String>) cutcopylist);
 		cutcopyintent.putExtra("targetfolder", targetfolder);
-		act.startService(cutcopyintent);
+		act.get().startService(cutcopyintent);
 		cutcopylist.clear();
 	}
 	
@@ -228,7 +228,7 @@ public class fileOperations
  		   }
  	   }
 		operationqueue.clear();
-		act.refreshcurrentgrid();
+		act.get().refreshcurrentgrid();
 		currentaction=consts.ACTION_NONE;
 	}
 	
@@ -255,8 +255,8 @@ public class fileOperations
  			   operationqueue.add(current);
  		   }
  	   	}
-		AlertDialog.Builder builder = new AlertDialog.Builder(act);
-		final LayoutInflater inflater= act.getLayoutInflater();
+		AlertDialog.Builder builder = new AlertDialog.Builder(act.get());
+		final LayoutInflater inflater= act.get().getLayoutInflater();
 		View removedialogview= inflater.inflate(R.layout.removedialog, null);
 		builder.setView(removedialogview);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -279,12 +279,12 @@ public class fileOperations
 	
 	public void wannaremovenowriteable(List<File> nowriteable)
 	{
-		LayoutInflater inflater=act.getLayoutInflater();
-		AlertDialog.Builder builder = new AlertDialog.Builder(act);
+		LayoutInflater inflater=act.get().getLayoutInflater();
+		AlertDialog.Builder builder = new AlertDialog.Builder(act.get());
 		View wannaView = inflater.inflate(R.layout.wannaremovenowriteable, null);
 		builder.setView(wannaView);
 		ListView list = (ListView) wannaView.findViewById(R.id.listnowrite);
-		list.setAdapter(new listfileadapter(nowriteable, act));
+		list.setAdapter(new listfileadapter(nowriteable, act.get()));
 		builder.setPositiveButton(R.string.ignore, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -304,8 +304,8 @@ public class fileOperations
 		currentaction=consts.ACTION_RENAME;
 		if(rename.canWrite())
 		{
-			String renamestring = act.getResources().getString(R.string.rename);
-			AlertDialog.Builder dialbuild=act.gettextdialog(renamestring, rename.getName());
+			String renamestring = act.get().getResources().getString(R.string.rename);
+			AlertDialog.Builder dialbuild=act.get().gettextdialog(renamestring, rename.getName());
 			dialbuild.setPositiveButton(R.string.rename, new DialogInterface.OnClickListener() {
 
 				@Override
@@ -318,13 +318,13 @@ public class fileOperations
 						{
 						rename.renameTo(newfile);
 						operationqueue.clear();
-						act.refreshcurrentgrid();
+						act.get().refreshcurrentgrid();
 						currentaction=consts.ACTION_NONE;
 						}
 						else
 						{
 							operationqueue.clear();
-							act.displaysimpledialog(R.string.error, R.string.renameexists);
+							act.get().displaysimpledialog(R.string.error, R.string.renameexists);
 						}
 					}
 				}
@@ -336,7 +336,7 @@ public class fileOperations
 		}
 		else
 		{
-			act.displaysimpledialog(R.string.cantrename, R.string.error);
+			act.get().displaysimpledialog(R.string.cantrename, R.string.error);
 		}
 	}
 
@@ -345,12 +345,12 @@ public class fileOperations
 		currentpath=path;
 		if(!(new File(currentpath)).canWrite())
 		{
-			act.displaysimpledialog(R.string.cantwritedir, R.string.error);
+			act.get().displaysimpledialog(R.string.cantwritedir, R.string.error);
 			return;
 		}
 		if(currentpath.equals(filelist.get(0).getParent()))
 		{
-			act.displaysimpledialog(R.string.samefolder, R.string.error);
+			act.get().displaysimpledialog(R.string.samefolder, R.string.error);
 			return;
 		}
 		operationqueue=filelist;
@@ -363,9 +363,9 @@ public class fileOperations
 	public void createfolder(final int message) {
 		currentaction=consts.ACTION_MKDIR;
 		operationqueue.add(new File(currentpath));
-		String newfolder=act.getResources().getString(R.string.newfolder);
-		String typenew=act.getResources().getString(message);
-		AlertDialog.Builder dialbuild=act.gettextdialog(typenew, newfolder);
+		String newfolder=act.get().getResources().getString(R.string.newfolder);
+		String typenew=act.get().getResources().getString(message);
+		AlertDialog.Builder dialbuild=act.get().gettextdialog(typenew, newfolder);
 		dialbuild.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id)
@@ -382,7 +382,7 @@ public class fileOperations
 					{
 						newdirfile.mkdir();
 						operationqueue.clear();
-						act.refreshcurrentgrid();
+						act.get().refreshcurrentgrid();
 						currentpath=null;
 						currentaction=consts.ACTION_NONE;
 					}
