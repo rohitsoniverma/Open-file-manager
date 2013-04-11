@@ -243,17 +243,18 @@ public class fileOperations
 	public void removefiles(List<File> selectedfiles)
 	{
 		currentaction=consts.ACTION_REMOVE;
+		operationqueue=selectedfiles;
 		final List <File> notwriteable= new ArrayList<File>();
-		for (int i=0; i<selectedfiles.size(); i++)
+		final List <File> writeable=new ArrayList<File>();
+		for (File current : selectedfiles)
 		{
- 		   File current= selectedfiles.get(i);
  		   if(!current.canWrite())
  		   {
  			   notwriteable.add(current);
  		   }
  		   else
  		   {
- 			   operationqueue.add(current);
+ 			   writeable.add(current);
  		   }
  	   	}
 		AlertDialog.Builder builder = new AlertDialog.Builder(act.get());
@@ -270,6 +271,7 @@ public class fileOperations
             	   else
             	   {
             		   performremove();
+            		   
             	   }
                }
 	});

@@ -86,13 +86,19 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			{
 				mAdapter.addFragment(Gridfragment.newInstance(curfrag));
 			}
+			ArrayList<String> oldselected=savedInstanceState.getStringArrayList("selectedfiles");
+			for(String curselected: oldselected)
+			{
+				selectedfiles.add(new File(curselected));
+			}
 		}
 		mPager.setAdapter(mAdapter);
 		if(mAdapter.selectpathmissing())
 		{
 			mAdapter.addFragment(Selectpathfragment.newInstance());
 		}
-		if(!(selectedcount == 0))
+		
+		if(selectedfiles.size() > 0)
 		{
 			mMode=startActionMode(getcallback());
 		}
@@ -145,6 +151,16 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		mPager.setAdapter(mAdapter);
 		mPager.setCurrentItem(fragnum);
 		setTitle(clicked.getName()==""? "/" : clicked.getName());
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		if(fileOperations.currentdialog!=null && fileOperations.currentdialog.isShowing())
+		{
+			fileOperations.currentdialog.dismiss();
+		}
 	}
 
 	@Override
@@ -206,6 +222,12 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			}
 			outState.putStringArrayList("oldqueue", oldoperations);
 		}
+		ArrayList<String> oldselected=new ArrayList<String>();
+		for(File current: selectedfiles)
+		{
+			oldselected.add(current.getAbsolutePath());
+		}
+		outState.putStringArrayList("selectedfiles", oldselected);
 	}
 
 
