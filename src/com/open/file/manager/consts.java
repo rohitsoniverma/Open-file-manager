@@ -13,4 +13,5 @@ public class consts
 	
 	//Rename index for actionbar
 	static final int INDEX_RENAME=3;
+	static final int INDEX_INFO=4;
 }

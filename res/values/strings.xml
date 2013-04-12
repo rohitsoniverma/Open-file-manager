@@ -21,6 +21,7 @@
     <string name="copy">Copy</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
+    <string name="info">File info</string>
     <string name="cantread">The file cannot be opened: you don\'t have permission to read it</string>
     <string name="cantopendir">The directory cannot be opened: you don\'t have permission to read it</string>
     <string name="cantrename">The file cannot be rename: you don\'t have permission to write it</string>
@@ -53,6 +54,6 @@
 	<string name="newfolder">New Folder</string>
 	<string name="newdirexists">A folder with chosen name already exists, choose another one</string>
 	<string name="invalidname">Chosen name for directory is empty, choose another one</string>
-	<string name="fileinfo">Name: \n%1$s\nSize: %2$s\nLast Modifiled: %3$s</string>
+	<string name="fileinfo">Name: %1$s\nMimetype: %2$s\nSize: %3$s\nLast Modifiled: %4$s</string>
 	<string name="waitingduplicate">Operation paused: there are duplicates, tap to solve them</string>
 </resources>

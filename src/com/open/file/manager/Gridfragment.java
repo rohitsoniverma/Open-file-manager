@@ -13,6 +13,7 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -175,6 +175,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			if(selectedcount==2)
 			{
 				mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(false);
+				mMode.getMenu().getItem(consts.INDEX_INFO).setVisible(false);
+
 			}
 			if(mMode == null)
 			{
@@ -189,6 +191,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			if(selectedcount==1)
 			{
 				mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(true);
+				mMode.getMenu().getItem(consts.INDEX_INFO).setVisible(true);
+
 			}
 			if(selectedcount == 0)
 			{
@@ -244,6 +248,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 				if(selectedcount==1)
 				{
 					mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(true);
+					mMode.getMenu().getItem(consts.INDEX_INFO).setVisible(true);
+
 				}
 				if(selectedcount == 0)
 				{
@@ -259,6 +265,8 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 				if(selectedcount==2)
 				{
 					mMode.getMenu().getItem(consts.INDEX_RENAME).setVisible(false);
+					mMode.getMenu().getItem(consts.INDEX_INFO).setVisible(false);
+
 				}
 			}
 			return true;
@@ -399,6 +407,10 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 					operator.renamefile(selectedfiles);
 				mode.finish();
 				return true;
+				case(R.id.info):
+					getfileinfo(selectedfiles.get(0));
+				mode.finish();
+				return true;
 				}
 				return false;
 			}
@@ -434,6 +446,19 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		};
 	}
 
+
+	protected void getfileinfo(File file) {
+		iconLoader loader=new iconLoader(actcontext);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater= (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		View infodialogview= inflater.inflate(R.layout.fileinfo, null);
+		builder.setView(infodialogview);
+		TextView infotv=(TextView) infodialogview.findViewById(R.id.infofile);
+		infotv.setText(operator.getfileinfo(file));
+		infotv.setCompoundDrawables(null, loader.loadConflictico(file),null, null);
+		builder.setPositiveButton("OK", null);
+		builder.create().show();
+	}
 
 	private Callback getpastecallback() {
 		return new Callback()
@@ -542,35 +567,11 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			View askdialogview= inflater.inflate(R.layout.conflictdialog, null);
 			builder.setView(askdialogview);
 			TextView srcdescr=(TextView) askdialogview.findViewById(R.id.srcdescr);
-			DateFormat dateform=DateFormat.getDateTimeInstance();
-			String format=getResources().getString(R.string.fileinfo);
-			Date srcdate=new Date(src.lastModified());
-			String srcsize;
-			if(src.isDirectory())
-			{
-				srcsize=Integer.toString(src.listFiles().length)+" elements";
-			}
-			else
-			{
-				srcsize=fileOperations.gethumansize(src.length());
-			}
-			String srcinfo= String.format(format, src.getName(), srcsize, dateform.format(srcdate));
-			srcdescr.setText(srcinfo);
+			
+			srcdescr.setText(operator.getfileinfo(src));
 			srcdescr.setCompoundDrawables(null, loader.loadConflictico(src), null, null);
-			String dstsize;
-			if(dst.isDirectory())
-			{
-				dstsize=Integer.toString(dst.listFiles().length)+" elements";
-			}
-			else
-			{
-				dstsize=fileOperations.gethumansize(src.length());
-			}
-
-			Date dstdate=new Date(dst.lastModified());
 			TextView dstdescr=(TextView) askdialogview.findViewById(R.id.dstdescr);
-			String dstinfo= String.format(format, dst.getName(), dstsize, dateform.format(dstdate));
-			dstdescr.setText(dstinfo);
+			dstdescr.setText(operator.getfileinfo(dst));
 			dstdescr.setCompoundDrawables(null, loader.loadConflictico(dst),null, null);
 
 			CheckBox overwriteall=(CheckBox) askdialogview.findViewById(R.id.overwritecheck);

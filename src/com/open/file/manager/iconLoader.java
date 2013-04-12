@@ -74,7 +74,6 @@ public class iconLoader
 	{
 		mycont=ct;
 		genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
-		//PEZZI di codice da risistemare, li ho tagliati da imageadapter... questa è l'hash delle img
 	}
 
 	private boolean cancelPotentialWork(Gridviewholder holder)
@@ -233,7 +232,7 @@ public class iconLoader
 
 		@Override
 		protected void onPostExecute(Void param) {
-			if(mholder.position==mposition && icon!=null)
+			if(mholder.position==mposition && icon!=null && !isCancelled())
 			{
 				ImageView iconview = mholder.fileicon;
 				iconview.setImageBitmap(icon);

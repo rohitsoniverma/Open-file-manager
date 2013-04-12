@@ -13,7 +13,9 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -28,6 +30,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -401,6 +404,32 @@ public class fileOperations
 		currentdialog.show();
 	}
 	
+	public String getfileinfo(File src)
+	{
+		DateFormat dateform=DateFormat.getDateTimeInstance();
+		String format=act.get().getResources().getString(R.string.fileinfo);
+		Date srcdate=new Date(src.lastModified());
+		String srcsize, mimetype;
+		if(src.isDirectory())
+		{
+			srcsize=Integer.toString(src.listFiles().length)+" elements";
+			mimetype="Directory";
+		}
+		else
+		{
+			srcsize=fileOperations.gethumansize(src.length());
+			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(src.getAbsolutePath()).toLowerCase();
+			mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+			if(mimetype==null)
+			{
+				mimetype="unknown";
+			}
+		}
+		
+		String srcinfo= String.format(format, src.getName(),mimetype ,srcsize, dateform.format(srcdate));
+		return srcinfo;
+	}
+	
 	public static String gethumansize(long bytesize) {
 		long dividefactor;
 		String unit;
@@ -412,7 +441,7 @@ public class fileOperations
 			unit = "MiB";
 		} else if (bytesize >= 1024) {
 			dividefactor = 1024;
-			unit = "GiB";
+			unit = "KiB";
 		} else {
 			dividefactor = 1;
 			unit = "B";
