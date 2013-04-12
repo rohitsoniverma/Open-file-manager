@@ -12,6 +12,12 @@ BUILDING:
 Just build like a regular android project
 
 BINARY:
-======
+=======
 
 I included the generated apk in the git repo for convenience, if you want to download it just head [here](https://github.com/ashmikuz/Open-file-manager/blob/master/bin/Open%20File%20Manager.apk?raw=true).
+
+CREDITS:
+========
+
+[Actionbarsherlock library](http://actionbarsherlock.com/)
+[Oxygen Icons](www.oxygen-icons.org)
