@@ -19,5 +19,6 @@ I included the generated apk in the git repo for convenience, if you want to dow
 CREDITS:
 ========
 
-[Actionbarsherlock library](http://actionbarsherlock.com/)
-[Oxygen Icons](www.oxygen-icons.org)
+[Actionbarsherlock library](http://actionbarsherlock.com/)  
+
+[Oxygen Icons](www.oxygen-icons.org)  
