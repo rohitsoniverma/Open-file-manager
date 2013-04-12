@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -404,7 +406,7 @@ public class fileOperations
 		currentdialog.show();
 	}
 	
-	public String getfileinfo(File src)
+	public Spanned getfileinfo(File src)
 	{
 		DateFormat dateform=DateFormat.getDateTimeInstance();
 		String format=act.get().getResources().getString(R.string.fileinfo);
@@ -427,7 +429,8 @@ public class fileOperations
 		}
 		
 		String srcinfo= String.format(format, src.getName(),mimetype ,srcsize, dateform.format(srcdate));
-		return srcinfo;
+		Spanned retval=Html.fromHtml(srcinfo);
+		return retval;
 	}
 	
 	public static String gethumansize(long bytesize) {

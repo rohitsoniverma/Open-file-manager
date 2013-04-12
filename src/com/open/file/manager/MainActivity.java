@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -514,15 +516,35 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.newdir:
+			if(mAdapter.getItem(mAdapter.getcurrentfrag()) instanceof Selectpathfragment)
+			{
+				displaysimpledialog(R.string.selectpathfirst, R.string.error);
+			}
+			else
+			{
 			fileOperations.currentpath=getcurrentpath();
 			operator.createfolder(R.string.typedirname);
+			}
 			return true;
 		case R.id.about:
-			//show about dialog
+			showaboutdialog();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void showaboutdialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		LayoutInflater inflater= (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		View aboutdialogview= inflater.inflate(R.layout.aboutdialog, null);
+		builder.setView(aboutdialogview);
+		TextView bodyview=(TextView) aboutdialogview.findViewById(R.id.aboutcontent);
+		bodyview.setText(Html.fromHtml(getString(R.string.aboutBody)));
+		bodyview.setMovementMethod(LinkMovementMethod.getInstance());
+		builder.setTitle(R.string.about);
+		builder.setPositiveButton("OK", null);
+		builder.create().show();
 	}
 
 	@Override

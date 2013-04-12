@@ -54,6 +54,20 @@
 	<string name="newfolder">New Folder</string>
 	<string name="newdirexists">A folder with chosen name already exists, choose another one</string>
 	<string name="invalidname">Chosen name for directory is empty, choose another one</string>
-	<string name="fileinfo">Name: %1$s\nMimetype: %2$s\nSize: %3$s\nLast Modifiled: %4$s</string>
+	<string name="fileinfo"> <![CDATA[
+	    <b>Name: </b>%1$s<br>
+	    <b>Mimetype: </b>%2$s<br><b>Size: </b>%3$s<br>
+	    <b>Last Modifiled:</b> %4$s
+	    ]]></string>
 	<string name="waitingduplicate">Operation paused: there are duplicates, tap to solve them</string>
+	<string name="aboutheader">\u00A9 2013 Michele Corazza</string>
+	<string name="aboutBody"><![CDATA[
+	    <a href="https://github.com/ashmikuz/Open-file-manager">Project home</a><br><br>
+	    This file manager is a Mobile applications project from CS course at University of Bologna.<br>
+	    This is free software released under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3 license</a>.<br>
+	    <br><b>Credits</b><br>
+	    <a href="http://actionbarsherlock.com/">Actionbarsherlock library</a><br>
+	    <a href="http://www.oxygen-icons.org/">Oxygen icons</a>
+	    ]]></string>
+	<string name="selectpathfirst">You have to select a path below before creating a directory</string>
 </resources>
