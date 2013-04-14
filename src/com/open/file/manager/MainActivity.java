@@ -402,7 +402,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 				mode.finish();
 				return true;
 				case(R.id.delete):
-					operator.removefiles(selectedfiles);
+				operator.removefiles(selectedfiles);
 				mode.finish();
 				return true;
 				case(R.id.rename):

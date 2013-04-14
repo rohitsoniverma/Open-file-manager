@@ -218,22 +218,22 @@ public class fileOperations
 	
 	public void performremove()
 	{
-		for (int i=0; i<operationqueue.size(); i++)
+		Log.d("whoa", Integer.toString(operationqueue.size()));
+		for (File current : operationqueue)
  	   	{
- 		   File current= operationqueue.get(i);
+			Log.d("performing remove", current.getAbsolutePath());
  		   if(current.isDirectory())
  		   {
  		   DeleteRecursive(current);
  		   }
  		   else
  		   {
- 			   if(current.exists())
+ 			   if(current.exists() && current.canWrite())
  			   {
  			   current.delete();
  			   }
  		   }
  	   }
-		operationqueue.clear();
 		act.get().refreshcurrentgrid();
 		currentaction=consts.ACTION_NONE;
 	}
@@ -248,18 +248,14 @@ public class fileOperations
 	public void removefiles(List<File> selectedfiles)
 	{
 		currentaction=consts.ACTION_REMOVE;
-		operationqueue=selectedfiles;
+		operationqueue.addAll(selectedfiles);
 		final List <File> notwriteable= new ArrayList<File>();
-		final List <File> writeable=new ArrayList<File>();
 		for (File current : selectedfiles)
 		{
+			Log.d("current", current.toString());
  		   if(!current.canWrite())
  		   {
  			   notwriteable.add(current);
- 		   }
- 		   else
- 		   {
- 			   writeable.add(current);
  		   }
  	   	}
 		AlertDialog.Builder builder = new AlertDialog.Builder(act.get());
@@ -271,12 +267,14 @@ public class fileOperations
                public void onClick(DialogInterface dialog, int id) {
             	   if(notwriteable.size()>0)
             	   {
+            		   Log.d("nowriteble", "what");
             		   wannaremovenowriteable(notwriteable);
             	   }
             	   else
             	   {
+            		   Log.d("ok", "entering");
             		   performremove();
-            		   
+            			operationqueue.clear();
             	   }
                }
 	});
