@@ -218,21 +218,12 @@ public class fileOperations
 	
 	public void performremove()
 	{
-		Log.d("whoa", Integer.toString(operationqueue.size()));
 		for (File current : operationqueue)
  	   	{
-			Log.d("performing remove", current.getAbsolutePath());
- 		   if(current.isDirectory())
- 		   {
- 		   DeleteRecursive(current);
- 		   }
- 		   else
- 		   {
  			   if(current.exists() && current.canWrite())
  			   {
- 			   current.delete();
+ 		 		   DeleteRecursive(current);
  			   }
- 		   }
  	   }
 		act.get().refreshcurrentgrid();
 		currentaction=consts.ACTION_NONE;
