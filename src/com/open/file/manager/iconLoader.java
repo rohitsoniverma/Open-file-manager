@@ -161,7 +161,12 @@ public class iconLoader
 						appInfo.publicSourceDir = current.getAbsolutePath();
 					}
 					Drawable apkico = appInfo.loadIcon(mycont.getPackageManager());
+					final float scale = mycont.getResources().getDisplayMetrics().density;
+					final int targetHeight= Math.round(32*scale);
+					final int targetWidth=Math.round(32*scale);
+					Log.d(Integer.toString(targetHeight), Integer.toString(targetWidth));
 					icon = ((BitmapDrawable) apkico).getBitmap();
+					icon=Bitmap.createScaledBitmap(icon, targetWidth, targetHeight, false);
 				}
 				else
 				{
