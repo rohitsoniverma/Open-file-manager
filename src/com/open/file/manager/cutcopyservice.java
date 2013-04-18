@@ -51,6 +51,7 @@ public class cutcopyservice extends IntentService {
 	private FileCopyTree tree;
 	private ArrayList<fileDuplicate> duplicates;
 	private static int id;
+	private static int completeid=1;
 	private long progressbytes = 0;
 	private int progresspercent = 0;
 	private static long totalbytes;
@@ -99,7 +100,7 @@ public class cutcopyservice extends IntentService {
 		cutcopynotification.contentView.setTextViewText(R.id.errortext, errstring);
 		cutcopynotification.contentIntent=contentIntent;
 		cutcopynotification.icon=R.drawable.error;
-		cutcopymanager.notify(id+1, cutcopynotification);
+		cutcopymanager.notify(completeid, cutcopynotification);
 	}
 
 	private boolean notenoughspace(FileCopyNode current) {
@@ -121,7 +122,7 @@ public class cutcopyservice extends IntentService {
 			finishbuilder.setContentTitle(completed);
 			finishbuilder.setSmallIcon(R.drawable.complete);
 			finishbuilder.setContentIntent(contentIntent);
-			cutcopymanager.notify(id+1, finishbuilder.build());
+			cutcopymanager.notify(completeid, finishbuilder.build());
 			stopForeground(true);
 			this.stopSelf();
 			return;
@@ -262,6 +263,8 @@ public class cutcopyservice extends IntentService {
 			MainActivity.dupHandler.sendMessage(dupmsg);
 		}
 		id = 1;
+		completeid=completeid%Integer.MAX_VALUE;
+		if(completeid==1) completeid=2;
 		cutcopymanager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		cutcopybuilder = new NotificationCompat.Builder(this);
 		// cutcopybuilder.setProgress(100, 0, false);
