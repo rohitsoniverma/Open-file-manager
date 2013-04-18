@@ -11,7 +11,10 @@ public class consts
 	static final int ACTION_MKDIR=4;
 	static final int ACTION_DUPLICATES=5;
 	
-	//Rename index for actionbar
+	//Rename  and fileinfo index for actionbar
 	static final int INDEX_RENAME=3;
 	static final int INDEX_INFO=4;
+	
+	static final int MSG_DUPLICATES=0;
+	static final int MSG_FINISHED=1;
 }

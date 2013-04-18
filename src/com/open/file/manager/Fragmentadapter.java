@@ -139,4 +139,12 @@ public class Fragmentadapter extends FragmentStatePagerAdapter{
 		if(fragments.isEmpty()) return true;
 		return!(fragments.get(fragments.size()-1) instanceof Selectpathfragment);
 	}
+
+	public void updatefrags() {
+		for(int i=0; i<fragments.size()-1;i++)
+		{
+			((Gridfragment)fragments.get(i)).refreshFiles();
+		}
+		
+	}
 }

@@ -67,7 +67,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	public static ViewPager mPager;
 	static fileOperations operator;
 	int currentaction;
-	public static Handler dupHandler;
+	public static Handler acthandler;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		}
 		curfrag=mAdapter.getcurrentfrag();
 		mPager.setCurrentItem(curfrag);
-		dupHandler=new duplicatehandler();
+		acthandler=new activityhandler();
 		restoreOperations(savedInstanceState);
 	}
 
@@ -552,14 +552,24 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		displaysimpledialog(titlebar, content);
 	}
 
-	static class duplicatehandler extends Handler
+	static class activityhandler extends Handler
 	{
 		@Override
 		public void handleMessage(Message msg) {
-			fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
-			operator.askconflicts(fileOperations.conflicts, false, false, 0);
+			switch(msg.what)
+			{
+			case consts.MSG_DUPLICATES:
+				fileOperations.conflicts=msg.getData().getParcelableArrayList("duplicates");
+				operator.askconflicts(fileOperations.conflicts, false, false, 0);
+				break;
+			case consts.MSG_FINISHED:
+				mAdapter.updatefrags();
+				break;
+			}
+			
 		}
 	}
+	
 
 	public Builder showConflictdialog(fileDuplicate conflict) {
 		AlertDialog.Builder builder;

@@ -123,6 +123,7 @@ public class cutcopyservice extends IntentService {
 			finishbuilder.setSmallIcon(R.drawable.complete);
 			finishbuilder.setContentIntent(contentIntent);
 			cutcopymanager.notify(completeid, finishbuilder.build());
+			MainActivity.acthandler.sendEmptyMessage(0);
 			stopForeground(true);
 			this.stopSelf();
 			return;
@@ -260,7 +261,8 @@ public class cutcopyservice extends IntentService {
 			Bundle dupdata = new Bundle();
 			dupdata.putParcelableArrayList("duplicates", tree.duplicates);
 			dupmsg.setData(dupdata);
-			MainActivity.dupHandler.sendMessage(dupmsg);
+			dupmsg.what=consts.MSG_DUPLICATES;
+			MainActivity.acthandler.sendMessage(dupmsg);
 		}
 		id = 1;
 		completeid=completeid%Integer.MAX_VALUE;
