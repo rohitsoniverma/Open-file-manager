@@ -354,12 +354,6 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 	}
 
 
-	public void refreshcurrentgrid()
-	{
-		int fragnum= mPager.getCurrentItem();
-		((Gridfragment) mAdapter.getItem(fragnum)).refreshFiles();
-	}
-
 
 	private String getcurrentpath() {
 		return ((Gridfragment) mAdapter.getItem(mAdapter.getcurrentfrag())).getCurrentDir().getAbsolutePath();

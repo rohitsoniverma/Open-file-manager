@@ -225,7 +225,7 @@ public class fileOperations
  		 		   DeleteRecursive(current);
  			   }
  	   }
-		act.get().refreshcurrentgrid();
+		MainActivity.mAdapter.updatefrags();
 		currentaction=consts.ACTION_NONE;
 	}
 	
@@ -315,7 +315,7 @@ public class fileOperations
 						{
 						rename.renameTo(newfile);
 						operationqueue.clear();
-						act.get().refreshcurrentgrid();
+						MainActivity.mAdapter.updatefrags();
 						currentaction=consts.ACTION_NONE;
 						}
 						else
@@ -379,7 +379,7 @@ public class fileOperations
 					{
 						newdirfile.mkdir();
 						operationqueue.clear();
-						act.get().refreshcurrentgrid();
+						MainActivity.mAdapter.updatefrags();
 						currentpath=null;
 						currentaction=consts.ACTION_NONE;
 					}
