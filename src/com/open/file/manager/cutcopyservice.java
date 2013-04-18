@@ -266,9 +266,11 @@ public class cutcopyservice extends IntentService {
 		cutcopybuilder = new NotificationCompat.Builder(this);
 		// cutcopybuilder.setProgress(100, 0, false);
 
-		Intent notificationIntent = new Intent();
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		contentIntent = PendingIntent.getActivity(
-				getBaseContext(), 0, notificationIntent, 0);
+				this, 0, notificationIntent, 0);
 		cutcopybuilder.setContent(new RemoteViews(getApplicationContext()
 				.getPackageName(), R.layout.progressbarlayout));
 		cutcopybuilder.setSmallIcon(R.drawable.notifyicon);
