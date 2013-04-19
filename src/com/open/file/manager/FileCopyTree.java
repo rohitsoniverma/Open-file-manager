@@ -149,17 +149,17 @@ class FileDuplicate implements Parcelable
 	{
 		if(src.isDirectory() && dst.isDirectory())
 		{
-			type=1;
+			type=Consts.CONFLICT_DIR_DIR;
 		}
 		else
 		{
 			if(src.isDirectory() || dst.isDirectory())
 			{
-				type=2;
+				type=Consts.CONFLICT_FILE_DIR;
 			}
 			else
 			{
-				type=3;
+				type=Consts.CONFLICT_FILE_FILE;
 			}
 		}
 	}

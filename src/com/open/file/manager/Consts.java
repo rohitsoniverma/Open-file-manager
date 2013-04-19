@@ -20,4 +20,8 @@ public class Consts
 	
 	static final int ICON_SIZE=48;
 	
+	static final int CONFLICT_DIR_DIR=1;
+	static final int CONFLICT_FILE_DIR=2;
+	static final int CONFLICT_FILE_FILE=3;
+	
 }

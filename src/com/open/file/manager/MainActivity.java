@@ -575,7 +575,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		File src = conflict.src;
 		File dst = conflict.dst;
 		IconLoader loader = new IconLoader(actcontext);
-		if (conflict.type == 2) {
+		if (conflict.type == Consts.CONFLICT_FILE_DIR) {
 			String fileordir, filename, messageformat, messagetxt;
 			if (dst.isDirectory()) {
 				fileordir = "directory";

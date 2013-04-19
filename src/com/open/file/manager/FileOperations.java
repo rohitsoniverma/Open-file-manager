@@ -94,6 +94,7 @@ public class FileOperations {
 		AlertDialog.Builder builder;
 		currentaction = Consts.ACTION_DUPLICATES;
 		if (duplicates.size() == current) {
+			//if we have finished asking, send results back
 			if (duplicates.equals(conflicts)) {
 				Log.d("i am", "here");
 				Message dupmsg = Message.obtain();
@@ -103,7 +104,6 @@ public class FileOperations {
 				dupmsg.setData(dupdata);
 				if (isMyServiceRunning() && CutCopyService.mHandler != null) {
 					if (!CutCopyService.mHandler.sendMessage(dupmsg)) {
-						Log.d("not", "sent");
 					}
 					Log.d("conflictsize", Integer.toString(conflicts.size()));
 					Log.d("message", "sent");
@@ -111,7 +111,9 @@ public class FileOperations {
 					conflicts.clear();
 					currentaction = Consts.ACTION_NONE;
 				}
-			} else {
+			}
+			//else we are in a sub-folder, return up
+			else {
 				int oldindex;
 				ArrayList<FileDuplicate> restoredup = conflicts;
 				for (int i = 0; i < duptreepath.size() - 1; i++) {
@@ -125,6 +127,7 @@ public class FileOperations {
 			return;
 		}
 		final FileDuplicate conflict = duplicates.get(current);
+		//handle already processed duplicates
 		if (conflict.processed) {
 			if (conflict.childDuplicates.size() > 0) {
 				duptreepath.add(current);
@@ -135,7 +138,8 @@ public class FileOperations {
 						current + 1);
 			}
 		}
-		if (conflict.type == 1) {
+		//if conflict is between dirs, check if we selected to overwrite
+		if (conflict.type == Consts.CONFLICT_DIR_DIR) {
 			if (overwritefolders) {
 				conflict.overwrite = true;
 				conflict.processed = true;
@@ -150,7 +154,8 @@ public class FileOperations {
 				return;
 			}
 		}
-		if (conflict.type == 3) {
+		//same for file/file conflict
+		if (conflict.type == Consts.CONFLICT_FILE_FILE) {
 			if (overwritefiles) {
 				conflict.overwrite = true;
 				conflict.processed = true;
@@ -159,8 +164,11 @@ public class FileOperations {
 				return;
 			}
 		}
+		
+		//show appropriate dialog
 		builder = act.get().showConflictdialog(conflict);
-		if (conflict.type == 2) {
+		
+		if (conflict.type == Consts.CONFLICT_FILE_DIR) {
 			builder.setPositiveButton(R.id.rename,
 					new DialogInterface.OnClickListener() {
 						@Override
