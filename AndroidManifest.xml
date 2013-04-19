@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:permission="android.permission.WRITE_EXTERNAL_STORAGE" android:name=".cutcopyservice"></service>
+        <service android:permission="android.permission.WRITE_EXTERNAL_STORAGE" android:name=".CutCopyService"></service>
     </application>
 
 </manifest>

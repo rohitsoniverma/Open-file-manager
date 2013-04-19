@@ -23,7 +23,7 @@ import android.util.Log;
 public class FileCopyTree
 {
 	public List<FileCopyNode> children= new ArrayList<FileCopyNode>();
-	public ArrayList<fileDuplicate> duplicates = new ArrayList<fileDuplicate>();
+	public ArrayList<FileDuplicate> duplicates = new ArrayList<FileDuplicate>();
 	public long size=0;
 	public int nfiles=0;
 	public FileCopyTree(List<String> fileList, File dstdir)
@@ -56,7 +56,7 @@ class FileCopyNode
 	public File srcFile;
 	public File dstFile;
 	public List<FileCopyNode> children=new ArrayList<FileCopyNode>();
-	public fileDuplicate duplicate=null;
+	public FileDuplicate duplicate=null;
 	public long size;
 	public int nfiles;
 	
@@ -67,7 +67,7 @@ class FileCopyNode
 		nfiles=1;
 		if(dstFile.exists())
 		{
-			duplicate=new fileDuplicate(srcFile, dstFile, this);
+			duplicate=new FileDuplicate(srcFile, dstFile, this);
 		}
 		if(father!=null)
 		{
@@ -122,7 +122,7 @@ class FileCopyNode
 	}
 }
 
-class fileDuplicate implements Parcelable
+class FileDuplicate implements Parcelable
 {
 	File src;
 	File dst;
@@ -131,16 +131,16 @@ class fileDuplicate implements Parcelable
 	//1 per conflitto fra dir, 2 per conflitto dir/file o viceversa, 3 per file/file
 	int type;
 	String newname;
-	ArrayList<fileDuplicate> childDuplicates=new ArrayList<fileDuplicate>();
+	ArrayList<FileDuplicate> childDuplicates=new ArrayList<FileDuplicate>();
 	
-	public fileDuplicate(File source, File dest, FileCopyNode node)
+	public FileDuplicate(File source, File dest, FileCopyNode node)
 	{
 		src=source;
 		dst=dest;
 		getConfilctType();
 	}
 	
-	public fileDuplicate(Parcel in) {
+	public FileDuplicate(Parcel in) {
 		super();
 		readFromParcel(in);
 	}
@@ -170,14 +170,14 @@ class fileDuplicate implements Parcelable
 		return 0;
 	}
 	
-	 public static final Parcelable.Creator<fileDuplicate> CREATOR
-     = new Parcelable.Creator<fileDuplicate>() {
- public fileDuplicate createFromParcel(Parcel in) {
-     return new fileDuplicate(in);
+	 public static final Parcelable.Creator<FileDuplicate> CREATOR
+     = new Parcelable.Creator<FileDuplicate>() {
+ public FileDuplicate createFromParcel(Parcel in) {
+     return new FileDuplicate(in);
  }
 
- public fileDuplicate[] newArray(int size) {
-     return new fileDuplicate[size];
+ public FileDuplicate[] newArray(int size) {
+     return new FileDuplicate[size];
  }
 };
 	
@@ -189,7 +189,7 @@ class fileDuplicate implements Parcelable
 		Log.d("overwrite", Boolean.toString(overwrite));
 		processed=(in.readInt()==1);
 		type=in.readInt();
-		in.readTypedList(childDuplicates, fileDuplicate.CREATOR);
+		in.readTypedList(childDuplicates, FileDuplicate.CREATOR);
 		getConfilctType();
 	}
 

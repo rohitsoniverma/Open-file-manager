@@ -22,6 +22,7 @@
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="info">File info</string>
+    <string name="ok">OK</string>
     <string name="cantread">The file cannot be opened: you don\'t have permission to read it</string>
     <string name="cantopendir">The directory cannot be opened: you don\'t have permission to read it</string>
     <string name="cantrename">The file cannot be rename: you don\'t have permission to write it</string>
