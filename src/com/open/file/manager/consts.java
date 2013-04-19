@@ -17,4 +17,7 @@ public class consts
 	
 	static final int MSG_DUPLICATES=0;
 	static final int MSG_FINISHED=1;
+	
+	static final int ICON_SIZE=48;
+	
 }

@@ -449,6 +449,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 		LayoutInflater inflater= (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		View infodialogview= inflater.inflate(R.layout.fileinfo, null);
 		builder.setView(infodialogview);
+		builder.setTitle(R.string.info);
 		TextView infotv=(TextView) infodialogview.findViewById(R.id.infofile);
 		infotv.setText(operator.getfileinfo(file));
 		infotv.setCompoundDrawables(null, loader.loadConflictico(file),null, null);
@@ -592,6 +593,7 @@ implements Selectpathfragment.OnPathSelectedListener, Gridfragment.Gridviewliste
 			LayoutInflater inflater= (LayoutInflater) getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 			View askdialogview= inflater.inflate(R.layout.conflictdialog, null);
 			builder.setView(askdialogview);
+			builder.setTitle(R.string.duplicatefound);
 			TextView srcdescr=(TextView) askdialogview.findViewById(R.id.srcdescr);
 			
 			srcdescr.setText(operator.getfileinfo(src));

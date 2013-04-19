@@ -57,9 +57,11 @@
 	<string name="fileinfo"> <![CDATA[
 	    <b>Name: </b>%1$s<br>
 	    <b>Mimetype: </b>%2$s<br><b>Size: </b>%3$s<br>
-	    <b>Last Modifiled:</b> %4$s
+	    <b>Last Modifiled:</b> %4$s<br>
+	    <b>Permissions:</b> %5$s</br>
 	    ]]></string>
 	<string name="waitingduplicate">Operation paused: there are duplicates, tap to solve them</string>
+	<string name="duplicatefound">Duplicate found</string>
 	<string name="aboutheader">\u00A9 2013 Michele Corazza</string>
 	<string name="aboutBody"><![CDATA[
 	    <a href="https://github.com/ashmikuz/Open-file-manager">Project home</a><br><br>

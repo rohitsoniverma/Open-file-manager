@@ -115,6 +115,35 @@ public class iconLoader
 			iv.setImageBitmap(bitmapCache.get(key));
 		}
 	}
+	
+	private Bitmap getApkIcon(File current)
+	{
+		try
+		{
+		Bitmap icon = null;
+		PackageInfo packageInfo = mycont.getPackageManager().getPackageArchiveInfo(current.getAbsolutePath(), 
+				PackageManager.GET_ACTIVITIES);
+		if(packageInfo != null) {
+			ApplicationInfo appInfo = packageInfo.applicationInfo;
+			if (Build.VERSION.SDK_INT >= 8) {
+				appInfo.sourceDir = current.getAbsolutePath();
+				appInfo.publicSourceDir = current.getAbsolutePath();
+			}
+			Drawable apkico = appInfo.loadIcon(mycont.getPackageManager());
+			final float scale = mycont.getResources().getDisplayMetrics().density;
+			final int targetHeight= Math.round(consts.ICON_SIZE*scale);
+			final int targetWidth=Math.round(consts.ICON_SIZE*scale);
+			Log.d(Integer.toString(targetHeight), Integer.toString(targetWidth));
+			icon = ((BitmapDrawable) apkico).getBitmap();
+			icon=Bitmap.createScaledBitmap(icon, targetWidth, targetHeight, false);
+		}
+		return icon;
+		}
+		catch (Exception exc)
+		{
+			return null;
+		}
+	}
 
 	public Bitmap getIcon(File current)
 	{
@@ -151,24 +180,9 @@ public class iconLoader
 				}
 			}
 			else if(mimetype=="application/vnd.android.package-archive")
-			{
-				PackageInfo packageInfo = mycont.getPackageManager().getPackageArchiveInfo(current.getAbsolutePath(), 
-						PackageManager.GET_ACTIVITIES);
-				if(packageInfo != null) {
-					ApplicationInfo appInfo = packageInfo.applicationInfo;
-					if (Build.VERSION.SDK_INT >= 8) {
-						appInfo.sourceDir = current.getAbsolutePath();
-						appInfo.publicSourceDir = current.getAbsolutePath();
-					}
-					Drawable apkico = appInfo.loadIcon(mycont.getPackageManager());
-					final float scale = mycont.getResources().getDisplayMetrics().density;
-					final int targetHeight= Math.round(32*scale);
-					final int targetWidth=Math.round(32*scale);
-					Log.d(Integer.toString(targetHeight), Integer.toString(targetWidth));
-					icon = ((BitmapDrawable) apkico).getBitmap();
-					icon=Bitmap.createScaledBitmap(icon, targetWidth, targetHeight, false);
-				}
-				else
+			{	
+				icon=getApkIcon(current);
+				if(icon==null)
 				{
 					icon=BitmapFactory.decodeResource(mycont.getResources(), icons.get(mimetype));
 				}
@@ -191,8 +205,8 @@ public class iconLoader
 
 	private static int getScaleratio(Options bounds) {
 		final float scale = mycont.getResources().getDisplayMetrics().density;
-		final int targetHeight= Math.round(32*scale);
-		final int targetWidth=Math.round(32*scale);
+		final int targetHeight= Math.round(consts.ICON_SIZE*scale);
+		final int targetWidth=Math.round(consts.ICON_SIZE*scale);
 		int scaleratio=1;
 		if(bounds.outHeight> targetHeight || bounds.outWidth>targetWidth)
 		{

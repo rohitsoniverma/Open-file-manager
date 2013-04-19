@@ -1097,8 +1097,8 @@ containing a value of this type.
     }
     public static final class string {
         public static final int about=0x7f090027;
-        public static final int aboutBody=0x7f09003d;
-        public static final int aboutheader=0x7f09003c;
+        public static final int aboutBody=0x7f09003e;
+        public static final int aboutheader=0x7f09003d;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_bar_home_description=0x7f090000;
@@ -1157,6 +1157,7 @@ containing a value of this type.
         public static final int copypast=0x7f090032;
         public static final int cut=0x7f090014;
         public static final int delete=0x7f090017;
+        public static final int duplicatefound=0x7f09003c;
         public static final int error=0x7f09001f;
         public static final int filefolderconflict=0x7f09002b;
         public static final int fileinfo=0x7f09003a;
@@ -1179,7 +1180,7 @@ containing a value of this type.
         public static final int renameexists=0x7f090024;
         public static final int renametext=0x7f090020;
         public static final int samefolder=0x7f09002f;
-        public static final int selectpathfirst=0x7f09003e;
+        public static final int selectpathfirst=0x7f09003f;
         public static final int settings=0x7f090026;
         public static final int skip=0x7f09002a;
         public static final int succesfulcopy=0x7f09002d;

@@ -412,8 +412,8 @@ int menu activity_selectpath 0x7f0b0000
 int menu activity_viewfiles 0x7f0b0001
 int menu mainmenu 0x7f0b0002
 int string about 0x7f090027
-int string aboutBody 0x7f09003d
-int string aboutheader 0x7f09003c
+int string aboutBody 0x7f09003e
+int string aboutheader 0x7f09003d
 int string abs__action_bar_home_description 0x7f090000
 int string abs__action_bar_up_description 0x7f090001
 int string abs__action_menu_overflow_description 0x7f090002
@@ -442,6 +442,7 @@ int string copyger 0x7f090034
 int string copypast 0x7f090032
 int string cut 0x7f090014
 int string delete 0x7f090017
+int string duplicatefound 0x7f09003c
 int string error 0x7f09001f
 int string filefolderconflict 0x7f09002b
 int string fileinfo 0x7f09003a
@@ -464,7 +465,7 @@ int string rename 0x7f090018
 int string renameexists 0x7f090024
 int string renametext 0x7f090020
 int string samefolder 0x7f09002f
-int string selectpathfirst 0x7f09003e
+int string selectpathfirst 0x7f09003f
 int string settings 0x7f090026
 int string skip 0x7f09002a
 int string succesfulcopy 0x7f09002d

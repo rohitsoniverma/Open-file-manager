@@ -13,6 +13,7 @@ package com.open.file.manager;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class fileOperations
 	public static AlertDialog currentdialog;
 	public static ArrayList<fileDuplicate> conflicts;
 	List<Integer> duptreepath=new ArrayList<Integer>();
-
+		
 	
 	public fileOperations(Context appcont, MainActivity myact)
 	{
@@ -65,6 +66,10 @@ public class fileOperations
 	    }
 	    return false;
 	}
+	
+	//Native interface to access(char*, int) from unistd.h
+	public static native boolean access(String path, int mode);
+
 	
 	protected void askconflicts(final ArrayList<fileDuplicate> duplicates,final boolean overwritefiles,
 			final boolean overwritefolders, final int current) {
@@ -416,8 +421,26 @@ public class fileOperations
 				mimetype="unknown";
 			}
 		}
+		String permissions="";
+		permissions+=(src.canRead()? "R" : "-");
+		permissions+=(src.canWrite()? "W" : "-");
+		Boolean canexec;
 		
-		String srcinfo= String.format(format, src.getName(),mimetype ,srcsize, dateform.format(srcdate));
+		//The canexecute method is supported since api level 9, we use level 8 so in that case we put
+		//? in the string
+		try {			
+			Method m = File.class.getMethod("canExecute", new Class[] {} );
+			canexec=(Boolean)m.invoke(src);
+			permissions+=(canexec? "X" : "-");
+		}
+		catch (Exception exc)
+		{
+			permissions+="?";
+		}
+		
+
+		String srcinfo= String.format(format, src.getName(),mimetype ,
+				srcsize, dateform.format(srcdate), permissions);
 		Spanned retval=Html.fromHtml(srcinfo);
 		return retval;
 	}
