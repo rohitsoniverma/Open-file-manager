@@ -24,7 +24,6 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -107,7 +106,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 */
 	private void restoreOperations(Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
-			Log.d("restoring", "operations");
 			if (savedInstanceState.containsKey("conflicts")) {
 				FileOperations.conflicts = savedInstanceState
 						.getParcelableArrayList("conflicts");

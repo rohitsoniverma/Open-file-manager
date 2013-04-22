@@ -38,8 +38,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	   
 	   public void addFragment(SherlockFragment newFragment)
 	   {
-		   /*myfm.beginTransaction().add(newFragment, null).commit();
-		   myfm.executePendingTransactions();*/
 		   fragments.add(newFragment);
 		   notifyDataSetChanged();
 	   }
@@ -68,9 +66,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	public void replaceFragment(SherlockFragment newFragment, int pos) {
 		fragments.set(pos, newFragment);
 		notifyDataSetChanged();
-		/*myfm.beginTransaction().remove(oldfrag).commit();
-		myfm.beginTransaction().add(newFragment, null).commit();
-		myfm.executePendingTransactions();*/
 	}
 	
 	

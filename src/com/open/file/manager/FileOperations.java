@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -30,7 +31,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -96,7 +96,6 @@ public class FileOperations {
 		if (duplicates.size() == current) {
 			//if we have finished asking, send results back
 			if (duplicates.equals(conflicts)) {
-				Log.d("i am", "here");
 				Message dupmsg = Message.obtain();
 				ArrayList<FileDuplicate> tmpduplicates = conflicts;
 				Bundle dupdata = new Bundle();
@@ -105,8 +104,6 @@ public class FileOperations {
 				if (isMyServiceRunning() && CutCopyService.mHandler != null) {
 					if (!CutCopyService.mHandler.sendMessage(dupmsg)) {
 					}
-					Log.d("conflictsize", Integer.toString(conflicts.size()));
-					Log.d("message", "sent");
 					duptreepath.clear();
 					conflicts.clear();
 					currentaction = Consts.ACTION_NONE;
@@ -274,7 +271,6 @@ public class FileOperations {
 		operationqueue.addAll(selectedfiles);
 		final List<File> notwriteable = new ArrayList<File>();
 		for (File current : selectedfiles) {
-			Log.d("current", current.toString());
 			if (!current.canWrite()) {
 				notwriteable.add(current);
 			}
@@ -287,10 +283,8 @@ public class FileOperations {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				if (notwriteable.size() > 0) {
-					Log.d("nowriteble", "what");
 					wannaremovenowriteable(notwriteable);
 				} else {
-					Log.d("ok", "entering");
 					performremove();
 					operationqueue.clear();
 				}
@@ -452,7 +446,7 @@ public class FileOperations {
 		} else {
 			srcsize = FileOperations.gethumansize(src.length());
 			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(
-					src.getAbsolutePath()).toLowerCase();
+					src.getAbsolutePath()).toLowerCase(Locale.getDefault());
 			mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
 					fileExtension);
 			if (mimetype == null) {
@@ -516,7 +510,6 @@ public class FileOperations {
 			handlepaste(operationqueue, currentpath, currentaction);
 			break;
 		case Consts.ACTION_DUPLICATES:
-			Log.d("restoring", "duplicates");
 			askconflicts(conflicts, false, false, 0);
 			break;
 		case Consts.ACTION_MKDIR:

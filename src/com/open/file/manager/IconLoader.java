@@ -29,7 +29,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
@@ -131,7 +130,6 @@ public class IconLoader
 			final float scale = mycont.getResources().getDisplayMetrics().density;
 			final int targetHeight= Math.round(Consts.ICON_SIZE*scale);
 			final int targetWidth=Math.round(Consts.ICON_SIZE*scale);
-			Log.d(Integer.toString(targetHeight), Integer.toString(targetWidth));
 			icon = ((BitmapDrawable) apkico).getBitmap();
 			icon=Bitmap.createScaledBitmap(icon, targetWidth, targetHeight, false);
 		}
@@ -254,7 +252,6 @@ public class IconLoader
 			{
 				ImageView iconview = mholder.fileicon;
 				iconview.setImageBitmap(icon);
-				Log.d(current.getAbsolutePath(), Boolean.toString(icon==null));
 				if(bitmapCache.get(current.getAbsolutePath())==null)
 				{
 					bitmapCache.put(current.getAbsolutePath(), icon);

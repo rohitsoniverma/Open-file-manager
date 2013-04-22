@@ -33,7 +33,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 
@@ -71,20 +70,14 @@ public class CutCopyService extends IntentService {
 	private void performCutCopy() {
 		FileCopyNode current;
 		while (currentfileind < tree.children.size()) {
-			Log.d("currentind", Integer.toString(currentfileind));
 			try {
 				current = tree.children.get(currentfileind);
-				if(duplicates!=null)
-				{
-					Log.d("mooooo", "wrong");
-				}
 				if (current.duplicate != null && duplicates == null) {
 					String waitingdup=getResources().getString(R.string.waitingduplicate);
 					cutcopynotification.contentView.setTextViewText(R.id.progresstext, waitingdup);
 					cutcopymanager.notify(id, cutcopynotification);
 					Looper.loop();
 				}
-				Log.d("past", "duplicates");
 				performOperation(tree.children.get(currentfileind));
 				currentfileind++;
 			} catch (Exception e) {
@@ -199,7 +192,6 @@ public class CutCopyService extends IntentService {
 	private void performOperation(FileCopyNode filenode) throws IOException {
 		if (filenode.duplicate != null) {
 			if (!filenode.duplicate.overwrite) {
-				Log.d("skipping", "filezz");
 				totalbytes -= filenode.size;
 				updateProgress();
 				return;
