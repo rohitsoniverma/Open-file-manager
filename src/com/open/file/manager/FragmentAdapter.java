@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -33,7 +32,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	   // constructor
 	   public FragmentAdapter(FragmentManager fm, MainActivity act) {
 	      super(fm);
-	      mact=new WeakReference(act);
+	      mact=new WeakReference<MainActivity>(act);
 	      fragments=new ArrayList<SherlockFragment>();
 	   }
 	   

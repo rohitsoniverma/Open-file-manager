@@ -12,10 +12,8 @@
 package com.open.file.manager;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.Hashtable;
-
-import com.open.file.manager.GridAdapter.Gridviewholder;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -35,6 +33,8 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
+import com.open.file.manager.GridAdapter.Gridviewholder;
+
 public class IconLoader
 {
 	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/6);;
@@ -47,7 +47,6 @@ public class IconLoader
 		
 	};;;
 	private static Context mycont;
-	private final Bitmap genericicon;
 	final static Hashtable<String, Integer> icons=new Hashtable<String, Integer>(14)
 			{
 				private static final long serialVersionUID = -4906177634872793364L;
@@ -73,7 +72,6 @@ public class IconLoader
 	public IconLoader(Context ct)
 	{
 		mycont=ct;
-		genericicon=BitmapFactory.decodeResource(mycont.getResources(), R.drawable.unknownfile);
 	}
 
 	private boolean cancelPotentialWork(Gridviewholder holder)
@@ -154,7 +152,8 @@ public class IconLoader
 		}
 		else
 		{
-			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath()).toLowerCase();
+			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath());
+			fileExtension=fileExtension.toLowerCase(Locale.getDefault());
 			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 			String generictype;
 			String imgregexp="image/(jpg|jpeg|png)";

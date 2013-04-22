@@ -12,10 +12,7 @@
 package com.open.file.manager;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
-
-import com.open.file.manager.IconLoader.AsyncImgLoad;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -27,12 +24,13 @@ import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
 
+import com.open.file.manager.IconLoader.AsyncImgLoad;
+
 
 public class GridAdapter extends BaseAdapter {
 	
 	private File[] dirfiles;
     private Context mContext;
-    private int nfrag;
     private static final FileComparator compare= new FileComparator();
     private static LruCache<String, Bitmap> bitmapCache;
     private IconLoader loader;
