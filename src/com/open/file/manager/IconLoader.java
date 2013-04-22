@@ -165,7 +165,8 @@ public class IconLoader
 		}
 		else
 		{
-			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(current.getAbsolutePath());
+			String path=current.getAbsolutePath().toLowerCase(Locale.getDefault()).replace(" ", "");
+			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(path);
 			fileExtension=fileExtension.toLowerCase(Locale.getDefault());
 			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
 			String generictype;
