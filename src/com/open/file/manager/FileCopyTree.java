@@ -19,12 +19,21 @@ import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Tree root
+ */
 public class FileCopyTree
 {
 	public List<FileCopyNode> children= new ArrayList<FileCopyNode>();
 	public ArrayList<FileDuplicate> duplicates = new ArrayList<FileDuplicate>();
 	public long size=0;
 	public int nfiles=0;
+	
+	/**
+	 * Constructro
+	 * @param fileList list of files to be transferred
+	 * @param dstdir destination directory
+	 */
 	public FileCopyTree(List<String> fileList, File dstdir)
 	{
 		for(int i=0; i<fileList.size(); i++)
@@ -41,14 +50,11 @@ public class FileCopyTree
 		}
 	}
 	
-	public void removeChild(FileCopyNode child)
-	{
-		children.remove(child);
-		size-=child.size;
-	}
-	
 }
 
+/**
+ * Tree node
+ */
 class FileCopyNode
 {
 	public WeakReference<FileCopyNode> parent;
@@ -59,6 +65,12 @@ class FileCopyNode
 	public long size;
 	public int nfiles;
 	
+	/**
+	 * Constructor for tree node
+	 * @param src source file
+	 * @param father parent node (if present)
+	 * @param dstdir dest directory
+	 */
 	public FileCopyNode(File src, FileCopyNode father, File dstdir)
 	{
 		srcFile=src;
@@ -87,6 +99,11 @@ class FileCopyNode
 	}
 	
 
+	/**
+	 * Add child to node
+	 * @param child source file
+	 * @param dstfile destination file
+	 */
 	public FileCopyNode addChild(File child, File dstfile)
 	{
 		FileCopyNode childnode=new FileCopyNode(child, this, dstfile);
@@ -99,6 +116,11 @@ class FileCopyNode
 	}
 	
 	
+	/**
+	 * Add array of children
+	 * @param childrenArray
+	 * @param dstdir
+	 */
 	public void addChildrenArray(File[] childrenArray, File dstdir)
 	{
 		int ChildrenSize=0;
@@ -114,11 +136,6 @@ class FileCopyNode
 		size=ChildrenSize;
 	}
 	
-	public void removeChild(FileCopyNode childnode)
-	{
-		children.remove(childnode);
-		size-=childnode.size;
-	}
 }
 
 class FileDuplicate implements Parcelable

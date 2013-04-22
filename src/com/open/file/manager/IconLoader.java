@@ -37,7 +37,7 @@ import com.open.file.manager.GridAdapter.Gridviewholder;
 public class IconLoader
 {
 	private final static int cacheSize=(int) ((Runtime.getRuntime().maxMemory())/6);;
-	private static final LruCache<String,Bitmap> bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
+	static final LruCache<String,Bitmap> bitmapCache=new LruCache<String, Bitmap>(cacheSize) {
 
 		@Override
 		protected int sizeOf(String key, Bitmap bitmap) {

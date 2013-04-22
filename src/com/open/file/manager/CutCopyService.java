@@ -196,20 +196,19 @@ public class CutCopyService extends IntentService {
 				updateProgress();
 				return;
 			} else {
-				// caso conflitto dir/dir, continuo semplicemente a scorrere
-				// l'albero
-				if (filenode.duplicate.type == 1) {
+				//dir/dir conflict, continue transferring directory content
+				if (filenode.duplicate.type == Consts.CONFLICT_DIR_DIR) {
 					for (int i = 0; i < filenode.children.size(); i++) {
 						performOperation(filenode.children.get(i));
 					}
 					return;
 				}
-				// caso conflitto file/dir, rinomino la destinazione
-				if (filenode.duplicate.type == 2) {
+				// file/dir conflict, rename destination
+				if (filenode.duplicate.type == Consts.CONFLICT_FILE_DIR) {
 					filenode.dstFile = new File(filenode.dstFile.getParent(),
 							filenode.duplicate.newname);
 				}
-				// caso conflitto file/file, rimuovo il file destinazione
+				// file/file conflict, remove destination
 				else {
 					filenode.dstFile.delete();
 				}

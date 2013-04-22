@@ -69,6 +69,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	}
 	
 	
+	/* 
+	 * Perform some actions when the user swaps between fragments
+	 */
 	@Override
 	public void setPrimaryItem (ViewGroup container, int position, Object object)
 	{
@@ -99,11 +102,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 		}
 	}
 	
+	/**
+	 * @return current frag position
+	 */
 	public int getcurrentfrag()
 	{
 		return currentfrag;
 	}
 
+	/**
+	 * @return list of paths of gridfragments
+	 */
 	public ArrayList<String> getFragments() {
 		ArrayList<String> gridpaths= new ArrayList<String>();
 		GridFragment current;
@@ -129,11 +138,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter{
 	{
 	}
 
+	/**
+	 * @return true if there is no selectpathfragment at the end of the fragment list
+	 */
 	public boolean selectpathmissing() {
 		if(fragments.isEmpty()) return true;
 		return!(fragments.get(fragments.size()-1) instanceof SelectPathFragment);
 	}
 
+	/**
+	 * refresh all grids
+	 */
 	public void updatefrags() {
 		for(int i=0; i<fragments.size()-1;i++)
 		{

@@ -15,8 +15,6 @@ import java.io.File;
 import java.util.Arrays;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +30,6 @@ public class GridAdapter extends BaseAdapter {
 	private File[] dirfiles;
     private Context mContext;
     private static final FileComparator compare= new FileComparator();
-    private static LruCache<String, Bitmap> bitmapCache;
     private IconLoader loader;
 
     public GridAdapter(Context c, File curdir) {
@@ -109,13 +106,6 @@ public class GridAdapter extends BaseAdapter {
     
 
     
-    public void addToCache(String key, Bitmap value)
-    {
-    	if(bitmapCache.get(key)==null)
-    	{
-    		bitmapCache.put(key, value);
-    	}
-    }
     
     static public class Gridviewholder
     {
