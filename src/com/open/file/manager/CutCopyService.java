@@ -38,8 +38,9 @@ import android.widget.RemoteViews;
 
 
 public class CutCopyService extends IntentService {
+	
 	public CutCopyService() {
-		super("cutcopyservice");
+		super("CutCopyService");
 	}
 
 	private int currentaction;
