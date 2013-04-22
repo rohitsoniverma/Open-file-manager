@@ -29,6 +29,7 @@
     <string name="cancel">Cancel</string>
     <string name="askremove">Are you sure you want to remove selected files?</string>
     <string name="error">Error</string>
+    <string name="pasteonlist">Select a folder to paste file(s)</string>
     <string name="renametext">Type new filename</string>
 	<string name="wannaremovenowriteable">The following files cannot be removed, do you want to proceed anyway?</string>
 	<string name="ignore">Ignore</string>

@@ -53,11 +53,12 @@ public class CutCopyService extends IntentService {
 	private FileCopyTree tree;
 	private ArrayList<FileDuplicate> duplicates;
 	private static int id;
-	private static int completeid=1;
-	private long progressbytes = 0;
-	private int progresspercent = 0;
-	private static long totalbytes;
+	private static int completeid=0;
+	private long progressbytes;
+	private int progresspercent;
+	private long totalbytes;
 	public static Handler mHandler;
+	static int currentfileind;
 	public final int[] actions=new int[] {R.string.copy, R.string.move};
 	public final int[] actioning=new int[] {R.string.copyger, R.string.moveger};
 	public final int[] actionspast=new int[] {R.string.copypast, R.string.movepast};
@@ -68,14 +69,15 @@ public class CutCopyService extends IntentService {
 	 * Proceed to cut/copy file(s) if there is no duplicate(s)
 	 */
 	private void performCutCopy() {
-		int i = 0;
 		FileCopyNode current;
-		totalbytes = tree.size;
-		mHandler = new dupresponcehandler(this);
-
-		while (i < tree.children.size()) {
+		while (currentfileind < tree.children.size()) {
+			Log.d("currentind", Integer.toString(currentfileind));
 			try {
-				current = tree.children.get(i);
+				current = tree.children.get(currentfileind);
+				if(duplicates!=null)
+				{
+					Log.d("mooooo", "wrong");
+				}
 				if (current.duplicate != null && duplicates == null) {
 					String waitingdup=getResources().getString(R.string.waitingduplicate);
 					cutcopynotification.contentView.setTextViewText(R.id.progresstext, waitingdup);
@@ -83,13 +85,13 @@ public class CutCopyService extends IntentService {
 					Looper.loop();
 				}
 				Log.d("past", "duplicates");
-				performOperation(tree.children.get(i));
-				i++;
+				performOperation(tree.children.get(currentfileind));
+				currentfileind++;
 			} catch (Exception e) {
 				notifyError(R.string.unknownerror);
 				e.printStackTrace();
 			}
-			i++;
+			currentfileind++;
 		}
 	}
 
@@ -142,7 +144,6 @@ public class CutCopyService extends IntentService {
 			cutcopymanager.notify(completeid, finishbuilder.build());
 			MainActivity.acthandler.sendEmptyMessage(Consts.MSG_FINISHED);
 			stopForeground(true);
-			this.stopSelf();
 			return;
 		}
 		if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
@@ -296,7 +297,12 @@ public class CutCopyService extends IntentService {
 		filelist = intent.getStringArrayListExtra("filelist");
 		targetfolder = new File(intent.getStringExtra("targetfolder"));
 		tree = new FileCopyTree(filelist, targetfolder);
-
+		duplicates=null;
+		currentfileind=0;
+		progressbytes=0;
+		progresspercent=0;
+		totalbytes=tree.size;
+		mHandler = new dupresponcehandler(this);
 		if (tree.duplicates.size() != 0) {
 			Message dupmsg = Message.obtain();
 			dupmsg.what=Consts.MSG_DUPLICATES;
@@ -306,8 +312,7 @@ public class CutCopyService extends IntentService {
 			MainActivity.acthandler.sendMessage(dupmsg);
 		}
 		id = 1;
-		completeid=completeid%Integer.MAX_VALUE;
-		if(completeid==1) completeid=2;
+		completeid=(completeid+2)%Integer.MAX_VALUE;
 		cutcopymanager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		cutcopybuilder = new NotificationCompat.Builder(this);
 		// cutcopybuilder.setProgress(100, 0, false);
@@ -354,8 +359,9 @@ public class CutCopyService extends IntentService {
 			currentservice.updateDuplicates(currentservice.duplicates, currentservice.tree.children);
 			currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
 			currentservice.cutcopymanager.notify(id, currentservice.cutcopynotification);
+			currentservice.performCutCopy();
 			}
-			Looper.myLooper().quit();
+			//Looper.myLooper().quit();
 			
 		}
 	}
