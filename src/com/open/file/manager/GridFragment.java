@@ -120,10 +120,7 @@ public class GridFragment extends SherlockFragment
 					}
 					else
 					{
-						String path=clicked.getAbsolutePath().toLowerCase(Locale.getDefault()).replace(" ", "");
-						String fileExtension = MimeTypeMap.getFileExtensionFromUrl(path);
-						fileExtension=fileExtension.toLowerCase(Locale.getDefault());
-						String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+						String mimetype = FileOperations.getMimeType(clicked);
 						if(clicked.canRead())
 						{
 							Intent i = new Intent();

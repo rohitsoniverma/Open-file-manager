@@ -165,10 +165,7 @@ public class IconLoader
 		}
 		else
 		{
-			String path=current.getAbsolutePath().toLowerCase(Locale.getDefault()).replace(" ", "");
-			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(path);
-			fileExtension=fileExtension.toLowerCase(Locale.getDefault());
-			String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+			String mimetype = FileOperations.getMimeType(current);
 			String generictype;
 			String imgregexp="image/(jpg|jpeg|png)";
 			BitmapFactory.Options previewoptions=new BitmapFactory.Options();

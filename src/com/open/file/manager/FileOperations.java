@@ -430,6 +430,14 @@ public class FileOperations {
 		currentdialog = dialbuild.create();
 		currentdialog.show();
 	}
+	
+	public static String getMimeType(File src)
+	{
+		String path = src.getAbsolutePath().toLowerCase(Locale.getDefault()).replace(" ", "");
+		String fileExtension = MimeTypeMap.getFileExtensionFromUrl(path);
+		String mimeType=MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+		return mimeType;
+	}
 
 	/**
 	 * @param src the file we need info from
@@ -445,10 +453,8 @@ public class FileOperations {
 			mimetype = "Directory";
 		} else {
 			srcsize = FileOperations.gethumansize(src.length());
-			String fileExtension = MimeTypeMap.getFileExtensionFromUrl(
-					src.getAbsolutePath()).toLowerCase(Locale.getDefault());
-			mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-					fileExtension);
+			
+			mimetype = getMimeType(src);
 			if (mimetype == null) {
 				mimetype = "unknown";
 			}
