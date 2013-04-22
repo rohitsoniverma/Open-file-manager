@@ -25,6 +25,7 @@
     <string name="ok">OK</string>
     <string name="cantread">The file cannot be opened: you don\'t have permission to read it</string>
     <string name="cantopendir">The directory cannot be opened: you don\'t have permission to read it</string>
+    <string name="cantopenfile">Impossible to open file</string>
     <string name="cantrename">The file cannot be rename: you don\'t have permission to write it</string>
     <string name="cancel">Cancel</string>
     <string name="askremove">Are you sure you want to remove selected files?</string>

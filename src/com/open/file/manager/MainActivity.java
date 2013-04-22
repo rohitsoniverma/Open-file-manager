@@ -453,6 +453,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		builder.create().show();
 	}
 
+	/**
+	 * @return Cakback for paste actionmode
+	 */
 	private Callback getPasteCallback() {
 		return new Callback() {
 

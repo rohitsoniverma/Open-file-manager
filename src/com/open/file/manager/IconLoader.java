@@ -87,6 +87,11 @@ public class IconLoader
 		return true;
 	}
 
+	/**
+	 * Load icon for current grid element
+	 * @param holder holder associated to grid view
+	 * @param position view position in the grid
+	 */
 	@SuppressLint("NewApi")
 	public void loadIcon(Gridviewholder holder, int position)
 	{
@@ -113,6 +118,11 @@ public class IconLoader
 		}
 	}
 	
+	/**
+	 * Get icon from the apk file
+	 * @param current apk to load icon from
+	 * @return icon bitmap
+	 */
 	private Bitmap getApkIcon(File current)
 	{
 		try
@@ -141,6 +151,11 @@ public class IconLoader
 		}
 	}
 
+	/**
+	 * Get icon for file
+	 * @param current
+	 * @return icon bitmap
+	 */
 	public Bitmap getIcon(File current)
 	{
 		Bitmap icon;
@@ -200,6 +215,11 @@ public class IconLoader
 		return icon;
 	}
 
+	/**
+	 * Get scale ratio to resize images
+	 * @param bounds image options
+	 * @return scale ratio
+	 */
 	private static int getScaleratio(Options bounds) {
 		final float scale = mycont.getResources().getDisplayMetrics().density;
 		final int targetHeight= Math.round(Consts.ICON_SIZE*scale);
@@ -215,6 +235,11 @@ public class IconLoader
 		return scaleratio;
 	}
 
+	/**
+	 * Load icon for conflict dialog
+	 * @param current
+	 * @return icon drawable
+	 */
 	public Drawable loadConflictico(File current)
 	{
 		Drawable icodraw;

@@ -71,8 +71,6 @@ public class SelectPathFragment extends SherlockFragment {
 	public void onAttach(Activity activity) {
         super.onAttach(activity);
         bookmarkadapter = new SelectPathAdapter(getActivity().getApplicationContext());
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
         try {
             mCallback = (OnPathSelectedListener) activity;
         } catch (ClassCastException e) {

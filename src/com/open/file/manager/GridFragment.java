@@ -88,6 +88,9 @@ public class GridFragment extends SherlockFragment
 		return v;
 	}
 
+	/* 
+	 * When the activity is started, create adapters and set listeners
+	 */
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -131,7 +134,7 @@ public class GridFragment extends SherlockFragment
 							}
 							catch(Exception ex)
 							{
-								//IMPOSSIBILE APRIRE IL FILE!!!!!
+								onclickcback.showDialog(R.string.cantopenfile, R.string.error);
 							}
 						}
 						else
@@ -181,6 +184,9 @@ public class GridFragment extends SherlockFragment
 		}
 	}
 
+	/**
+	 * @return parent directory of current path
+	 */
 	public File GetParent()
 	{
 		File parent = currentdir.getParentFile();
@@ -213,6 +219,9 @@ public class GridFragment extends SherlockFragment
 	}
 
 
+	/**
+	 * Clear all selected files
+	 */
 	public void clearselection() {
 		myimgad.notifyDataSetChanged();
 		int gridsize = grid.getChildCount();

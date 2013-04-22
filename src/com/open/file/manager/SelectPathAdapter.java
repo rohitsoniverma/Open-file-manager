@@ -40,6 +40,9 @@ public class SelectPathAdapter extends BaseAdapter {
 		
 	}
 
+	/**
+	 * Check if sdcard is mounted, else populate paths with root (/)
+	 */
 	private void populatePaths() {
 		String state = Environment.getExternalStorageState();
 		File downloads, music, pictures;
