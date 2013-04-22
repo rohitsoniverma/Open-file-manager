@@ -33,6 +33,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.StatFs;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 
@@ -116,7 +117,23 @@ public class CutCopyService extends IntentService {
 		StatFs targetfs=new StatFs(current.dstFile.getParent());
 		return current.size > (long)targetfs.getAvailableBlocks()*(long)targetfs.getBlockSize();
 	}
-
+	
+	private void finish()
+	{
+		NotificationCompat.Builder finishbuilder=new NotificationCompat.Builder(this);
+		String completed=getResources().getString(R.string.completed);
+		String actionpast=getResources().getString(actionspast[currentaction]);
+		String finished=getResources().getString(R.string.succesfulcopy);
+		finished=String.format(finished, FileOperations.gethumansize(totalbytes), actionpast);
+		finishbuilder.setContentText(finished);
+		finishbuilder.setContentTitle(completed);
+		finishbuilder.setSmallIcon(R.drawable.complete);
+		finishbuilder.setContentIntent(contentIntent);
+		cutcopymanager.notify(completeid, finishbuilder.build());
+		MainActivity.acthandler.sendEmptyMessage(Consts.MSG_FINISHED);
+		stopForeground(true);
+		return;
+	}
 	
 
 	/**
@@ -125,21 +142,9 @@ public class CutCopyService extends IntentService {
 	private void updateProgress() {
 		String progressstring;
 		if (progressbytes == totalbytes) {
-			NotificationCompat.Builder finishbuilder=new NotificationCompat.Builder(this);
-			String completed=getResources().getString(R.string.completed);
-			String actionpast=getResources().getString(actionspast[currentaction]);
-			String finished=getResources().getString(R.string.succesfulcopy);
-			finished=String.format(finished, FileOperations.gethumansize(totalbytes), actionpast);
-			finishbuilder.setContentText(finished);
-			finishbuilder.setContentTitle(completed);
-			finishbuilder.setSmallIcon(R.drawable.complete);
-			finishbuilder.setContentIntent(contentIntent);
-			cutcopymanager.notify(completeid, finishbuilder.build());
-			MainActivity.acthandler.sendEmptyMessage(Consts.MSG_FINISHED);
-			stopForeground(true);
-			return;
+			finish();
 		}
-		if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
+		else if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
 		{
 			progresspercent = (int) ((100 * progressbytes) / totalbytes);
 			cutcopynotification.contentView.setProgressBar(R.id.progressBar, 100,
@@ -260,13 +265,20 @@ public class CutCopyService extends IntentService {
 		if(notEnoughSpace(filenode))
 		{
 			notifyError(R.string.notenoughspace);
-			super.onDestroy();
+			stopSelf();
+		}
+		if(filenode.srcFile.length()==0)
+		{
+			filenode.dstFile.createNewFile();
+			updateProgress();
+			return;
 		}
 		InputStream in = new FileInputStream(filenode.srcFile);
 		OutputStream out = new FileOutputStream(filenode.dstFile);
 		byte[] buf = new byte[1024];
 		int len;
 		while ((len = in.read(buf)) > 0) {
+			Log.d("do i", "get here?");
 			out.write(buf, 0, len);
 			progressbytes+=len;
 			updateProgress();
