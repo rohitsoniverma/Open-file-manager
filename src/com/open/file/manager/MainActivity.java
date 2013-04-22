@@ -475,9 +475,19 @@ public class MainActivity extends SherlockFragmentActivity implements
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case (R.id.paste):
-					operator.handlepaste(operationqueue, getCurrentPath(),
-							currentaction);
-					mode.finish();
+					int fragindex = MainActivity.mPager.getCurrentItem();
+					SherlockFragment curfrag=mAdapter.getItem(fragindex);
+					if(curfrag instanceof GridFragment)
+					{
+						operator.handlepaste(operationqueue, getCurrentPath(),
+								currentaction);
+						mode.finish();
+					}
+					else
+					{
+						showDialog(R.string.pasteonlist, R.string.error);
+					}
+					
 					return true;
 				case (R.id.abs__action_mode_close_button):
 					mode.finish();
@@ -544,8 +554,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 *	Show dialog from grid
 	 */
 	@Override
-	public void showDialog(int titlebar, int content) {
-		displaySimpleDialog(titlebar, content);
+	public void showDialog(int content, int titlebar) {
+		displaySimpleDialog(content, titlebar);
 	}
 
 	static class ActivityHandler extends Handler {
