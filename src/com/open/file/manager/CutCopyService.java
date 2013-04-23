@@ -87,6 +87,7 @@ public class CutCopyService extends IntentService {
 			}
 			currentfileind++;
 		}
+		finish();
 	}
 
 	/**
@@ -141,10 +142,7 @@ public class CutCopyService extends IntentService {
 	 */
 	private void updateProgress() {
 		String progressstring;
-		if (progressbytes == totalbytes) {
-			finish();
-		}
-		else if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
+		if(progresspercent !=(int) ((100 * progressbytes) / totalbytes))
 		{
 			progresspercent = (int) ((100 * progressbytes) / totalbytes);
 			cutcopynotification.contentView.setProgressBar(R.id.progressBar, 100,
