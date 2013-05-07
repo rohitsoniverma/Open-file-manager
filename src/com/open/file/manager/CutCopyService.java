@@ -38,7 +38,7 @@ import android.widget.RemoteViews;
 
 
 public class CutCopyService extends IntentService {
-	
+
 	public CutCopyService() {
 		super("CutCopyService");
 	}
@@ -63,7 +63,6 @@ public class CutCopyService extends IntentService {
 	public final int[] actioning=new int[] {R.string.copyger, R.string.moveger};
 	public final int[] actionspast=new int[] {R.string.copypast, R.string.movepast};
 	static String actiongerund;
-	boolean processedduplicates=false;
 	PendingIntent contentIntent;
 
 	/**
@@ -119,7 +118,7 @@ public class CutCopyService extends IntentService {
 		StatFs targetfs=new StatFs(current.dstFile.getParent());
 		return current.size > (long)targetfs.getAvailableBlocks()*(long)targetfs.getBlockSize();
 	}
-	
+
 	private void finish()
 	{
 		NotificationCompat.Builder finishbuilder=new NotificationCompat.Builder(this);
@@ -136,7 +135,7 @@ public class CutCopyService extends IntentService {
 		stopForeground(true);
 		return;
 	}
-	
+
 
 	/**
 	 * Show progress in notification
@@ -156,9 +155,9 @@ public class CutCopyService extends IntentService {
 		}
 	}
 
-	 /**
-	  * Update duplicates in FileCopyNodes with duplicates received from
-	  * the activity
+	/**
+	 * Update duplicates in FileCopyNodes with duplicates received from
+	 * the activity
 	 * @param newduplic duplicates received
 	 * @param files file nodes to update
 	 */
@@ -243,7 +242,7 @@ public class CutCopyService extends IntentService {
 		}
 	}
 
-	
+
 	/**
 	 * Try to rename file to move it
 	 * @param src
@@ -287,7 +286,7 @@ public class CutCopyService extends IntentService {
 			filenode.srcFile.delete();
 		}
 	}
-	
+
 	void sendDuplicateMessage()
 	{
 		Message dupmsg = Message.obtain();
@@ -325,7 +324,7 @@ public class CutCopyService extends IntentService {
 
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		contentIntent = PendingIntent.getActivity(
 				this, 0, notificationIntent, 0);
 		cutcopybuilder.setContent(new RemoteViews(getApplicationContext()
@@ -348,12 +347,12 @@ public class CutCopyService extends IntentService {
 	static class dupresponcehandler extends Handler
 	{
 		WeakReference<CutCopyService> mservice;
-		
+
 		dupresponcehandler(CutCopyService service)
 		{
 			mservice=new WeakReference<CutCopyService>(service);
 		}
-		
+
 		@Override
 		public void handleMessage(Message msg) {
 			CutCopyService currentservice=mservice.get();
@@ -361,20 +360,19 @@ public class CutCopyService extends IntentService {
 			{
 				if(msg.what==Consts.MSG_DUPLICATES)
 				{
-			currentservice.processedduplicates=true;
-			currentservice.duplicates=msg.getData().getParcelableArrayList("duplicates");
-			currentservice.tree.duplicates=currentservice.duplicates;
-			currentservice.updateDuplicates(currentservice.duplicates, currentservice.tree.children);
-			currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
-			currentservice.cutcopymanager.notify(id, currentservice.cutcopynotification);
-			currentservice.performCutCopy();
+					currentservice.duplicates=msg.getData().getParcelableArrayList("duplicates");
+					currentservice.tree.duplicates=currentservice.duplicates;
+					currentservice.updateDuplicates(currentservice.duplicates, currentservice.tree.children);
+					currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
+					currentservice.cutcopymanager.notify(id, currentservice.cutcopynotification);
+					currentservice.performCutCopy();
 				}
 				if(msg.what==Consts.MSG_ACTIVITYRESTART)
 				{
 					if(currentservice.duplicates==null)
 					{
-					Log.d("send", "duplicates");
-					mservice.get().sendDuplicateMessage();
+						Log.d("send", "duplicates");
+						mservice.get().sendDuplicateMessage();
 					}
 				}
 			}			

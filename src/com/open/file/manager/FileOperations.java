@@ -529,8 +529,7 @@ public class FileOperations {
 			renamefile(operationqueue);
 			break;
 		default:
-			return;
+			break;
 		}
-
 	}
 }
