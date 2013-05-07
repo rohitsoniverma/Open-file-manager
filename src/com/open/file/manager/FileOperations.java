@@ -134,6 +134,7 @@ public class FileOperations {
 				askconflicts(duplicates, overwritefiles, overwritefolders,
 						current + 1);
 			}
+			return;
 		}
 		//if conflict is between dirs, check if we selected to overwrite
 		if (conflict.type == Consts.CONFLICT_DIR_DIR) {
