@@ -100,6 +100,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		
 		if(!restoreOperations(savedInstanceState) && operator.isMyServiceRunning())
 			{
+				Log.d("servicerunning?", Boolean.toString(operator.isMyServiceRunning()));
 				Log.d("restart", "activity");
 				Message restartmsg=Message.obtain();
 				restartmsg.what=Consts.MSG_ACTIVITYRESTART;
@@ -112,11 +113,13 @@ public class MainActivity extends SherlockFragmentActivity implements
 	 * @param savedInstanceState
 	 */
 	private boolean restoreOperations(Bundle savedInstanceState) {
+		boolean restoreconflicts=false;
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey("conflicts")) {
 				Log.d("reload", "conflicts");
 				FileOperations.conflicts = savedInstanceState
 						.getParcelableArrayList("conflicts");
+				restoreconflicts=!FileOperations.conflicts.isEmpty();
 			}
 			FileOperations.currentaction = savedInstanceState
 					.getInt("operation");
@@ -132,9 +135,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 						.getString("currentpath");
 			}
 			operator.restoreOp();
-			return true;
 		}
-		return false;
+		return restoreconflicts;
 	}
 
 	/**

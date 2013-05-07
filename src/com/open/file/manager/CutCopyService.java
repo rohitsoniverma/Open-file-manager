@@ -277,7 +277,6 @@ public class CutCopyService extends IntentService {
 		byte[] buf = new byte[1024];
 		int len;
 		while ((len = in.read(buf)) > 0) {
-			Log.d("do i", "get here?");
 			out.write(buf, 0, len);
 			progressbytes+=len;
 			updateProgress();
@@ -372,8 +371,9 @@ public class CutCopyService extends IntentService {
 				}
 				if(msg.what==Consts.MSG_ACTIVITYRESTART)
 				{
-					if(!currentservice.processedduplicates)
+					if(currentservice.duplicates==null)
 					{
+					Log.d("send", "duplicates");
 					mservice.get().sendDuplicateMessage();
 					}
 				}
