@@ -63,6 +63,7 @@ public class CutCopyService extends IntentService {
 	public final int[] actioning=new int[] {R.string.copyger, R.string.moveger};
 	public final int[] actionspast=new int[] {R.string.copypast, R.string.movepast};
 	static String actiongerund;
+	boolean processedduplicates=false;
 	PendingIntent contentIntent;
 
 	/**
@@ -287,6 +288,16 @@ public class CutCopyService extends IntentService {
 			filenode.srcFile.delete();
 		}
 	}
+	
+	void sendDuplicateMessage()
+	{
+		Message dupmsg = Message.obtain();
+		dupmsg.what=Consts.MSG_DUPLICATES;
+		Bundle dupdata = new Bundle();
+		dupdata.putParcelableArrayList("duplicates", tree.duplicates);
+		dupmsg.setData(dupdata);
+		MainActivity.acthandler.sendMessage(dupmsg);
+	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
@@ -305,12 +316,7 @@ public class CutCopyService extends IntentService {
 		totalbytes=tree.size;
 		mHandler = new dupresponcehandler(this);
 		if (tree.duplicates.size() != 0) {
-			Message dupmsg = Message.obtain();
-			dupmsg.what=Consts.MSG_DUPLICATES;
-			Bundle dupdata = new Bundle();
-			dupdata.putParcelableArrayList("duplicates", tree.duplicates);
-			dupmsg.setData(dupdata);
-			MainActivity.acthandler.sendMessage(dupmsg);
+			sendDuplicateMessage();
 		}
 		id = 1;
 		completeid=(completeid+2)%Integer.MAX_VALUE;
@@ -351,19 +357,27 @@ public class CutCopyService extends IntentService {
 		
 		@Override
 		public void handleMessage(Message msg) {
-			
-			if(mservice!=null && mservice.get()!=null)
-			{
 			CutCopyService currentservice=mservice.get();
+			if(mservice!=null && currentservice!=null)
+			{
+				if(msg.what==Consts.MSG_DUPLICATES)
+				{
+			currentservice.processedduplicates=true;
 			currentservice.duplicates=msg.getData().getParcelableArrayList("duplicates");
 			currentservice.tree.duplicates=currentservice.duplicates;
 			currentservice.updateDuplicates(currentservice.duplicates, currentservice.tree.children);
 			currentservice.cutcopynotification.contentView.setTextViewText(R.id.progresstext, actiongerund + " files");
 			currentservice.cutcopymanager.notify(id, currentservice.cutcopynotification);
 			currentservice.performCutCopy();
-			}
-			//Looper.myLooper().quit();
-			
+				}
+				if(msg.what==Consts.MSG_ACTIVITYRESTART)
+				{
+					if(!currentservice.processedduplicates)
+					{
+					mservice.get().sendDuplicateMessage();
+					}
+				}
+			}			
 		}
 	}
 }

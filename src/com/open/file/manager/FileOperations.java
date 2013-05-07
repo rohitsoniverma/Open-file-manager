@@ -66,7 +66,7 @@ public class FileOperations {
 	/*
 	 * @return Is a cutcopyservice running?
 	 */
-	private boolean isMyServiceRunning() {
+	public boolean isMyServiceRunning() {
 		ActivityManager manager = (ActivityManager) act.get().getSystemService(
 				Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager
@@ -97,13 +97,13 @@ public class FileOperations {
 			//if we have finished asking, send results back
 			if (duplicates.equals(conflicts)) {
 				Message dupmsg = Message.obtain();
+				dupmsg.what=Consts.MSG_DUPLICATES;
 				ArrayList<FileDuplicate> tmpduplicates = conflicts;
 				Bundle dupdata = new Bundle();
 				dupdata.putParcelableArrayList("duplicates", tmpduplicates);
 				dupmsg.setData(dupdata);
 				if (isMyServiceRunning() && CutCopyService.mHandler != null) {
-					if (!CutCopyService.mHandler.sendMessage(dupmsg)) {
-					}
+					CutCopyService.mHandler.sendMessage(dupmsg);
 					duptreepath.clear();
 					conflicts.clear();
 					currentaction = Consts.ACTION_NONE;
@@ -527,8 +527,8 @@ public class FileOperations {
 		case Consts.ACTION_RENAME:
 			renamefile(operationqueue);
 			break;
-		case Consts.ACTION_NONE:
-			break;
+		default:
+			return;
 		}
 
 	}

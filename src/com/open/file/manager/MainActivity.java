@@ -24,6 +24,7 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -96,17 +97,24 @@ public class MainActivity extends SherlockFragmentActivity implements
 		curfrag = mAdapter.getcurrentfrag();
 		mPager.setCurrentItem(curfrag);
 		acthandler = new ActivityHandler();
-		restoreOperations(savedInstanceState);
+		
+		if(!restoreOperations(savedInstanceState) && operator.isMyServiceRunning())
+			{
+				Log.d("restart", "activity");
+				Message restartmsg=Message.obtain();
+				restartmsg.what=Consts.MSG_ACTIVITYRESTART;
+				CutCopyService.mHandler.sendMessage(restartmsg);
+			}
 	}
-
 	/**
 	 * If an operation was not completed, restart it
 	 * 
 	 * @param savedInstanceState
 	 */
-	private void restoreOperations(Bundle savedInstanceState) {
+	private boolean restoreOperations(Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
 			if (savedInstanceState.containsKey("conflicts")) {
+				Log.d("reload", "conflicts");
 				FileOperations.conflicts = savedInstanceState
 						.getParcelableArrayList("conflicts");
 			}
@@ -123,8 +131,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				FileOperations.currentpath = savedInstanceState
 						.getString("currentpath");
 			}
+			operator.restoreOp();
+			return true;
 		}
-		operator.restoreOp();
+		return false;
 	}
 
 	/**
